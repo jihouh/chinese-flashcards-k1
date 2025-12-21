@@ -2,79 +2,98 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chinese Flashcards with Audio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fun Chinese Cards!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2c3e50;
-            --accent: #c0392b;
-            --bg: #fdfcf0; 
+            --primary: #FF6B6B; /* Soft Coral */
+            --secondary: #4ECDC4; /* Fresh Teal */
+            --yellow: #FFE66D; /* Sunny Yellow */
+            --bg: #F7FFF7; /* Mint White */
+            --text: #2F2F2F;
         }
 
         body {
-            font-family: "STKaiti", "KaiTi", "楷体", "BiauKai", serif;
+            font-family: 'Segoe UI', sans-serif;
             background-color: var(--bg);
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
             margin: 0;
-            color: var(--primary);
+            padding: 15px;
+            color: var(--text);
+            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 650px;
-            width: 100%;
+        .header {
             text-align: center;
+            margin-top: 10px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 0px white;
+        }
+
+        .hint {
+            background: var(--yellow);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
         }
 
         .grid {
-    display: grid;
-    /* This makes 1 column on small screens and 2 on larger ones */
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
-    width: 100%;
-}
+            display: grid;
+            /* 2 columns on mobile, larger cards */
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+            margin-top: 25px;
+        }
 
         .card {
             background: white;
-            border-radius: 15px;
-            padding: 40px 10px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-            border: 2px solid transparent;
+            border-radius: 25px;
+            padding: 30px 10px;
+            /* Playful shadow */
+            box-shadow: 0 8px 0px rgba(0,0,0,0.05);
+            border: 4px solid var(--secondary);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            aspect-ratio: 1 / 1.2;
             cursor: pointer;
-            transition: all 0.2s;
-            user-select: none;
-        }
-
-        .card:hover {
-            transform: scale(1.03);
-            border-color: #e0d9b5;
+            transition: transform 0.1s;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .card:active {
-            transform: scale(0.98);
-            background-color: #f9f9f9;
+            transform: translateY(4px);
+            box-shadow: 0 2px 0px rgba(0,0,0,0.05);
         }
 
         .char {
-            font-size: 120px;
+            /* Using the downloaded Google Brush Font */
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 90px;
             margin: 0;
-            line-height: 1.1;
+            line-height: 1;
+            color: var(--text);
         }
 
         .pinyin {
-            margin-top: 15px;
-            font-size: 26px;
-            color: var(--accent);
-            height: 30px;
-            font-weight: bold;
-            font-family: 'Segoe UI', sans-serif;
+            margin-top: 10px;
+            font-size: 22px;
+            color: var(--primary);
+            font-weight: 900;
+            height: 25px;
             visibility: hidden;
         }
 
@@ -82,49 +101,53 @@
             visibility: visible; 
         }
 
-        .hint {
-            font-size: 14px;
-            color: #888;
-            margin-top: 10px;
-            font-family: sans-serif;
-        }
-
         .controls {
-            margin-top: 40px;
+            margin-top: 30px;
             display: flex;
+            flex-direction: column;
             gap: 15px;
-            justify-content: center;
+            width: 100%;
+            max-width: 400px;
         }
 
         button {
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 50px;
+            padding: 18px;
+            font-size: 20px;
+            border-radius: 20px;
             border: none;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 6px 0px rgba(0,0,0,0.1);
         }
 
-        #shuffle { background: var(--primary); color: white; }
-        #reveal { background: #fff; border: 2px solid var(--primary); color: var(--primary); }
+        #shuffle { background: var(--secondary); }
+        #reveal { background: var(--primary); }
 
-        button:hover { opacity: 0.9; transform: translateY(-2px); }
+        button:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0px rgba(0,0,0,0.1);
+        }
+
+        /* Landscape mode optimization */
+        @media (max-height: 500px) {
+            .grid { grid-template-columns: repeat(4, 1fr); }
+            .char { font-size: 60px; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Chinese Flashcards</h1>
-    <p class="hint">Click a card to hear the pronunciation</p>
-    
-    <div class="grid" id="cardGrid"></div>
+<div class="header">
+    <h1>Super Cards! 🌟</h1>
+    <div class="hint">Tap a card to hear it!</div>
+</div>
 
-    <div class="controls">
-        <button id="shuffle">New Characters</button>
-        <button id="reveal">Show/Hide Pinyin</button>
-    </div>
+<div class="grid" id="cardGrid"></div>
+
+<div class="controls">
+    <button id="shuffle">🔄 New Cards</button>
+    <button id="reveal">👀 Show Secret Sounds</button>
 </div>
 
 <script>
@@ -132,21 +155,18 @@
     const charArray = rawList.split('');
 
     const pinyinMap = {
-        '上':'shàng','下':'xià','大':'dà','小':'xiǎo','又':'yòu','了':'le','个':'gè','不':'bù','人':'rén','口':'kǒu','手':'shǒu','心':'xīn','牙':'yá','头':'tóu','舌':'shé','耳':'ěr','木':'mù','土':'tǔ','水':'shuǐ','火':'huǒ','山':'shān','天':'tiān','日':'rì','月':'yuè','刀':'dāo','尺':'chǐ','门':'mén','书':'shū','牛':'niú','羊':'yáng','马':'mǎ','只':'zhī','白':'bái','云':'yún','风':'fēng','雨':'yǔ','花':'huā','石':'shí','飞':'fēi','太':'tài','米':'mǐ','光':'guāng','毛':'máo','子':'zǐ','工':'gōng','几':'jǐ','力':'lì','气':'qì','里':'lǐ','外':'wài','没':'méi','有':'yǒu','把':'bǎ','的':'de','多':'duō','少':'shǎo','开':'kāi','关':'guān','去':'qù','来':'lái','什':'shén','么':'me','还':'hái','会':'huì','男':'nán','女':'nǚ','左':'zuǒ','右':'yòu','好':'hǎo','坏':'huài','在':'zài','这':'zhè','也':'yě','对':'duì','要':'yào','是':'shì','我':'wǒ','们':'men','你':'nǐ','他':'tā'
+        '上':'shàng','下':'xià','大':'dà','小':'xiǎo','又':'yòu','了':'le','个':'gè','不':'bù','人':'rén','口':'kǒu','手':'shǒu','心':'xīn','牙':'yá','头':'tóu','舌':'shé','耳':'ěr','木':'mù','土':'tǔ','水':'shuǐ','火':'huǒ','山':'shān','天':'tiān','日':'rì','月':'yuè','刀':'dāo','尺':'chǐ','门':'mén','书':'shū','牛':'niú','羊':'yáng','馬':'mǎ','只':'zhī','白':'bái','云':'yún','风':'fēng','雨':'yǔ','花':'huā','石':'shí','飞':'fēi','太':'tài','米':'mǐ','光':'guāng','毛':'máo','子':'zǐ','工':'gōng','几':'jǐ','力':'lì','气':'qì','里':'lǐ','外':'wài','没':'méi','有':'yǒu','把':'bǎ','的':'de','多':'duō','少':'shǎo','开':'kāi','关':'guān','去':'qù','来':'lái','什':'shén','么':'me','还':'hái','会':'huì','男':'nán','女':'nǚ','左':'zuǒ','右':'yòu','好':'hǎo','坏':'huài','在':'zài','这':'zhè','也':'yě','对':'duì','要':'yào','是':'shì','我':'wǒ','们':'men','你':'nǐ','他':'tā','马':'mǎ'
     };
 
     const grid = document.getElementById('cardGrid');
     const shuffleBtn = document.getElementById('shuffle');
     const revealBtn = document.getElementById('reveal');
 
-    // Speech Function
     function speak(text) {
-        // Cancel any ongoing speech
         window.speechSynthesis.cancel();
-        
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'zh-CN'; // Set language to Chinese
-        utterance.rate = 0.8;    // Slightly slower for beginners
+        utterance.lang = 'zh-CN';
+        utterance.rate = 0.7; // Even slower for 5-year-olds
         window.speechSynthesis.speak(utterance);
     }
 
@@ -163,19 +183,14 @@
                 <div class="char">${c}</div>
                 <div class="pinyin">${p}</div>
             `;
-            
-            // Add click event for audio
             card.addEventListener('click', () => speak(c));
-            
             grid.appendChild(card);
         });
     }
 
     shuffleBtn.addEventListener('click', renderCards);
-    
     revealBtn.addEventListener('click', () => {
-        const pinyins = document.querySelectorAll('.pinyin');
-        pinyins.forEach(p => p.classList.toggle('visible'));
+        document.querySelectorAll('.pinyin').forEach(p => p.classList.toggle('visible'));
     });
 
     renderCards();
