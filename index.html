@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fun Chinese Cards</title>
+    <title>Ka Yan's Fun Card</title>
     <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #FF6B6B; /* Soft Coral */
-            --secondary: #4ECDC4; /* Fresh Teal */
-            --yellow: #FFE66D; /* Sunny Yellow */
-            --bg: #F7FFF7; /* Mint White */
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --yellow: #FFE66D;
+            --bg: #F7FFF7;
             --text: #2F2F2F;
             --shadow: #d4e5d4;
         }
@@ -18,19 +18,54 @@
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
             background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+            color: var(--text);
+            overscroll-behavior-y: contain;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 0;
-            padding: 20px;
-            color: var(--text);
-            overscroll-behavior-y: contain;
+            min-height: 100vh;
         }
 
-        .container {
-            max-width: 800px;
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
             width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .nav-item {
+            font-family: 'Klee One', cursive;
+            font-weight: bold;
+            color: #888;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        /* Page Management */
+        .page {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
             text-align: center;
+            box-sizing: border-box;
+            padding-bottom: 80px; /* Space for nav */
+        }
+
+        .page.active {
+            display: block;
         }
 
         h1 {
@@ -45,18 +80,18 @@
             background: var(--yellow);
             padding: 8px 20px;
             border-radius: 25px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
             display: inline-block;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 0px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
         }
 
+        /* Flashcard Styles */
         .grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
-            margin: 0 auto;
+            margin-top: 10px;
         }
 
         .card {
@@ -74,25 +109,51 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* DEFAULT Desktop Style (KaiTi) */
-        .char {
-            font-family: "STKaiti", "KaiTi", "楷体", serif;
-            font-size: 140px;
-            margin: 0;
-            line-height: 1.1;
-            color: var(--text);
+        /* Library Styles */
+        .lib-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 10px;
+            padding: 10px;
         }
 
-        /* MOBILE OVERRIDE (Iansui Style) */
+        .lib-item {
+            background: white;
+            border-radius: 12px;
+            padding: 10px 5px;
+            border: 2px solid #eee;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .lib-char {
+            font-size: 32px;
+            margin-bottom: 2px;
+        }
+
+        .lib-pinyin {
+            font-size: 10px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Fonts */
+        .char-font {
+            font-family: "STKaiti", "KaiTi", "楷体", serif;
+        }
+
         @media (max-width: 768px) {
-            .char {
+            .char-font {
                 font-family: 'Klee One', cursive;
-                font-size: 110px;
                 font-weight: 600;
             }
-            .grid { max-width: 100%; gap: 15px; }
-            h1 { font-size: 28px; }
+            .grid .char-font { font-size: 100px; }
+            h1 { font-size: 26px; }
         }
+
+        .char-font-lg { font-size: 140px; }
 
         .pinyin {
             margin-top: 12px;
@@ -101,7 +162,6 @@
             font-weight: 900;
             height: 32px;
             visibility: hidden;
-            font-family: sans-serif;
         }
 
         .pinyin.visible { visibility: visible; }
@@ -111,12 +171,11 @@
             display: flex;
             gap: 15px;
             justify-content: center;
-            width: 100%;
         }
 
         button {
-            padding: 18px 28px;
-            font-size: 20px;
+            padding: 15px 25px;
+            font-size: 18px;
             border-radius: 22px;
             border: none;
             cursor: pointer;
@@ -129,37 +188,49 @@
         #shuffle { background: var(--secondary); }
         #reveal { background: var(--primary); }
 
-        button:active, .card:active {
+        button:active, .card:active, .lib-item:active {
             transform: translateY(4px);
-            box-shadow: 0 2px 0px var(--shadow);
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Super Chinese Cards ✨</h1>
-    <div class="hint">Tap a card to hear! 🔊</div>
-
-    <div class="grid" id="cardGrid"></div>
-
-    <div class="controls">
-        <button id="shuffle">🔄 NEW</button>
-        <button id="reveal">👀 PINYIN</button>
+    <div id="game-page" class="page active">
+        <h1>Ka Yan's Fun Card ✨</h1>
+        <div class="hint">Tap a card to hear! 🔊</div>
+        <div class="grid" id="cardGrid"></div>
+        <div class="controls">
+            <button id="shuffle">🔄 NEW</button>
+            <button id="reveal">👀 PINYIN</button>
+        </div>
     </div>
-</div>
+
+    <div id="lib-page" class="page">
+        <h1>My Character Book 📖</h1>
+        <div class="hint">Tap to learn any character!</div>
+        <div class="lib-grid" id="libGrid"></div>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-item active" onclick="showPage('game')">🎮 Play</div>
+        <div class="nav-item" onclick="showPage('lib')">📚 Library</div>
+    </div>
 
 <script>
     const rawList = "上下大小又了个不人口手心牙头舌耳木土水火山天日月刀尺门书牛羊马只白云风雨花石飞太米光毛子工几力气里外没有把的多少开关去来什么还会男女左右好坏在这也对要是我们你他";
     const charArray = rawList.split('');
+    let usedCharacters = [];
+    const cooldownPeriod = 20;
 
-    const pinyinMap = {
-        '上':'shàng','下':'xià','大':'dà','小':'xiǎo','又':'yòu','了':'le','个':'gè','不':'bù','人':'rén','口':'kǒu','手':'shǒu','心':'xīn','牙':'yá','头':'tóu','舌':'shé','耳':'ěr','木':'mù','土':'tǔ','水':'shuǐ','火':'huǒ','山':'shān','天':'tiān','日':'rì','月':'yuè','刀':'dāo','尺':'chǐ','门':'mén','书':'shū','牛':'niú','羊':'yáng','马':'mǎ','只':'zhī','白':'bái','云':'yún','风':'fēng','雨':'yǔ','花':'huā','石':'shí','飞':'fēi','太':'tài','米':'mǐ','光':'guāng','毛':'máo','子':'zǐ','工':'gōng','几':'jǐ','力':'lì','气':'qì','里':'lǐ','外':'wài','没':'méi','有':'yǒu','把':'bǎ','的':'de','多':'duō','少':'shǎo','开':'kāi','关':'guān','去':'qù','来':'lái','什':'shén','么':'me','还':'hái','会':'huì','男':'nán','女':'nǚ','左':'zuǒ','右':'yòu','好':'hǎo','坏':'huài','在':'zài','这':'zhè','也':'yě','对':'duì','要':'yào','是':'shì','我':'wǒ','们':'men','你':'nǐ','他':'tā'
-    };
+    const pinyinMap = {'上':'shàng','下':'xià','大':'dà','小':'xiǎo','又':'yòu','了':'le','个':'gè','不':'bù','人':'rén','口':'kǒu','手':'shǒu','心':'xīn','牙':'yá','头':'tóu','舌':'shé','耳':'ěr','木':'mù','土':'tǔ','水':'shuǐ','火':'huǒ','山':'shān','天':'tiān','日':'rì','月':'yuè','刀':'dāo','尺':'chǐ','门':'mén','书':'shū','牛':'niú','羊':'yáng','马':'mǎ','只':'zhī','白':'bái','云':'yún','风':'fēng','雨':'yǔ','花':'huā','石':'shí','飞':'fēi','太':'tài','米':'mǐ','光':'guāng','毛':'máo','子':'zǐ','工':'gōng','几':'jǐ','力':'lì','气':'qì','里':'lǐ','外':'wài','没':'méi','有':'yǒu','把':'bǎ','的':'de','多':'duō','少':'shǎo','开':'kāi','关':'guān','去':'qù','来':'lái','什':'shén','么':'me','还':'hái','会':'huì','男':'nán','女':'nǚ','左':'zuǒ','右':'yòu','好':'hǎo','坏':'huài','在':'zài','这':'zhè','也':'yě','对':'duì','要':'yào','是':'shì','我':'wǒ','们':'men','你':'nǐ','他':'tā'};
 
-    const grid = document.getElementById('cardGrid');
-    const shuffleBtn = document.getElementById('shuffle');
-    const revealBtn = document.getElementById('reveal');
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(pageId + '-page').classList.add('active');
+        event.currentTarget.classList.add('active');
+        if (navigator.vibrate) navigator.vibrate(20);
+    }
 
     function speak(text) {
         window.speechSynthesis.cancel();
@@ -171,31 +242,41 @@
     }
 
     function renderCards() {
-        const shuffled = [...charArray].sort(() => 0.5 - Math.random());
-        const selected = shuffled.slice(0, 4);
+        const availableChars = charArray.filter(char => !usedCharacters.includes(char));
+        const selected = [...availableChars].sort(() => 0.5 - Math.random()).slice(0, 4);
+        usedCharacters.push(...selected);
+        if (usedCharacters.length > cooldownPeriod) usedCharacters.splice(0, selected.length);
+
+        const grid = document.getElementById('cardGrid');
         grid.innerHTML = '';
         selected.forEach(c => {
-            const p = pinyinMap[c] || '';
             const card = document.createElement('div');
             card.className = 'card';
-            card.innerHTML = `<div class="char">${c}</div><div class="pinyin">${p}</div>`;
+            card.innerHTML = `<div class="char-font char-font-lg">${c}</div><div class="pinyin">${pinyinMap[c]}</div>`;
             card.onclick = () => speak(c);
             grid.appendChild(card);
         });
     }
 
-    shuffleBtn.onclick = () => {
-        renderCards();
-        if (navigator.vibrate) navigator.vibrate(20);
-    };
+    function renderLibrary() {
+        const libGrid = document.getElementById('libGrid');
+        libGrid.innerHTML = '';
+        charArray.forEach(c => {
+            const item = document.createElement('div');
+            item.className = 'lib-item';
+            item.innerHTML = `<div class="char-font lib-char">${c}</div><div class="lib-pinyin">${pinyinMap[c]}</div>`;
+            item.onclick = () => speak(c);
+            libGrid.appendChild(item);
+        });
+    }
 
-    revealBtn.onclick = () => {
+    document.getElementById('shuffle').onclick = renderCards;
+    document.getElementById('reveal').onclick = () => {
         document.querySelectorAll('.pinyin').forEach(p => p.classList.toggle('visible'));
-        if (navigator.vibrate) navigator.vibrate(20);
     };
 
     renderCards();
+    renderLibrary();
 </script>
-
 </body>
 </html>
