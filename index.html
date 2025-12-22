@@ -22,29 +22,30 @@
 
         .header {
             width: 100%; max-width: 900px; display: flex; justify-content: space-between;
-            align-items: center; padding: 10px 15px; box-sizing: border-box;
+            align-items: center; padding: 15px; box-sizing: border-box;
         }
 
-        h1 { font-size: 18px; color: var(--primary); margin: 0; font-family: 'Klee One', cursive; }
+        h1 { font-size: 20px; color: var(--primary); margin: 0; font-family: 'Klee One', cursive; font-weight: 600; }
 
         .fullscreen-btn {
-            background: #eee; color: #666; font-size: 10px; padding: 5px 10px;
-            border-radius: 8px; border: 1px solid #ddd; cursor: pointer;
+            background: #eee; color: #666; font-size: 12px; padding: 8px 12px;
+            border-radius: 10px; border: 1px solid #ddd; cursor: pointer; font-weight: bold;
         }
 
         .nav-bar {
             position: fixed; bottom: 0; width: 100%; background: white; 
-            display: flex; justify-content: space-around; padding: 6px 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100;
+            display: flex; justify-content: space-around; padding: 10px 0;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.08); z-index: 100;
         }
 
-        .nav-item { font-family: 'Klee One', cursive; font-weight: bold; color: #888; cursor: pointer; font-size: 11px; text-align: center; }
+        .nav-item { font-family: 'Klee One', cursive; font-weight: bold; color: #888; cursor: pointer; font-size: 14px; text-align: center; }
+        .nav-item i { display: block; font-size: 24px; margin-bottom: 2px; font-style: normal; }
         .nav-item.active { color: var(--primary); }
 
-        .page { display: none; width: 100%; max-width: 500px; padding: 5px 10px 75px 10px; text-align: center; box-sizing: border-box; transition: max-width 0.3s; }
+        .page { display: none; width: 100%; max-width: 500px; padding: 5px 10px 100px 10px; text-align: center; box-sizing: border-box; }
         .page.active { display: block; }
 
-        .hint { background: var(--yellow); padding: 3px 10px; border-radius: 15px; font-size: 11px; font-weight: bold; display: inline-block; margin-bottom: 5px; }
+        .hint { background: var(--yellow); padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
         .char-font { font-family: "STKaiti", "KaiTi", "楷体", serif; }
         
         @media (min-width: 768px) {
@@ -52,61 +53,72 @@
             .grid { grid-template-columns: repeat(4, 1fr) !important; }
             .match-grid { grid-template-columns: repeat(4, 1fr) !important; }
             .lib-grid { grid-template-columns: repeat(8, 1fr) !important; }
-            .trace-card { padding: 20px !important; }
-            h1 { font-size: 24px; }
+            .trace-card { padding: 25px !important; }
+            h1 { font-size: 32px; }
+            .nav-item { font-size: 16px; }
+            .nav-item i { font-size: 30px; }
         }
 
-        .lib-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; width: 100%; }
+        button { 
+            padding: 12px 20px; border-radius: 15px; border: none; color: white; 
+            font-weight: 900; cursor: pointer; font-size: 14px; 
+            font-family: 'Klee One', cursive; box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+            transition: transform 0.1s;
+        }
+        button:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.1); }
+
+        /* LIBRARY GRID */
+        .lib-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: 100%; }
         .lib-item { 
-            background: white !important; border-radius: 8px; padding: 8px 0; 
-            border: 1.5px solid var(--lib-border); display: flex; flex-direction: column; 
+            background: white !important; border-radius: 12px; padding: 10px 0; 
+            border: 2px solid var(--lib-border); display: flex; flex-direction: column; 
             align-items: center; justify-content: center; aspect-ratio: 1 / 1.15; 
             user-select: none; cursor: pointer;
         }
-        .lib-char { font-size: 32px; font-weight: bold; line-height: 1; color: #000; }
-        .lib-pinyin { font-size: 9px; color: var(--primary); font-weight: bold; margin-top: 2px; }
+        .lib-char { font-size: 36px; font-weight: bold; line-height: 1; color: #000; }
+        .lib-pinyin { font-size: 11px; color: var(--primary); font-weight: bold; margin-top: 4px; }
 
-        .trace-container { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        .trace-card { background: white; border: 3px solid var(--secondary); border-radius: 15px; padding: 8px; box-shadow: 0 4px 0px var(--shadow); }
-        .pinyin-label { font-size: 18px; color: var(--primary); font-weight: 900; visibility: hidden; height: 22px; margin: 2px 0; }
+        .trace-container { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .trace-card { background: white; border: 4px solid var(--secondary); border-radius: 20px; padding: 10px; box-shadow: 0 6px 0px var(--shadow); }
+        .pinyin-label { font-size: 22px; color: var(--primary); font-weight: 900; visibility: hidden; height: 26px; margin: 5px 0; }
         .pinyin-label.visible { visibility: visible !important; }
 
-        .match-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; width: 100%; }
-        .match-card { background: white; border-radius: 10px; border: 2px solid var(--secondary); display: flex; align-items: center; justify-content: center; aspect-ratio: 3 / 1; padding: 2px; cursor: pointer; }
+        .match-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; }
+        .match-card { background: white; border-radius: 15px; border: 3px solid var(--secondary); display: flex; align-items: center; justify-content: center; aspect-ratio: 2.2 / 1; padding: 10px; cursor: pointer; }
+        .match-char-text { font-size: 48px; font-weight: bold; color: #000; }
+        .match-pinyin-text { font-size: 22px; color: var(--primary); font-weight: 900; }
         .match-card-selected { background-color: var(--yellow) !important; border-color: var(--primary) !important; }
 
-        #focus-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center; flex-direction: column; }
-        .focus-card { background: white; width: 250px; padding: 15px; border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; }
+        .card { background: white; border-radius: 20px; min-height: 130px; box-shadow: 0 6px 0px var(--shadow); border: 4px solid var(--secondary); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
+        .play-char { font-size: 65px; line-height: 1; color: #000; }
 
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; }
-        .card { background: white; border-radius: 15px; min-height: 110px; box-shadow: 0 4px 0px var(--shadow); border: 3px solid var(--secondary); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
-        .play-char { font-size: 55px; line-height: 1; color: #000; }
-        
-        button { padding: 8px 12px; border-radius: 12px; border: none; color: white; font-weight: bold; cursor: pointer; font-size: 12px; font-family: 'Klee One', cursive; box-shadow: 0 2px 0 rgba(0,0,0,0.1); }
+        #focus-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 200; align-items: center; justify-content: center; flex-direction: column; }
+        .focus-card { background: white; width: 280px; padding: 20px; border-radius: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>Ka Yan's Fun Card ✨</h1>
+        <h1>Ka Yan's Learning Chinese is Fun ✨</h1>
         <button id="fullscreenToggle" class="fullscreen-btn" onclick="toggleFullScreen()">🖥️ FULLSCREEN</button>
     </div>
 
     <div id="focus-overlay" onclick="closeFocus()">
         <div class="focus-card" onclick="event.stopPropagation()">
             <div id="focus-writer-container"></div>
-            <div id="focus-pinyin-val" style="font-size: 24px; color:var(--primary); font-weight:bold; margin-top:8px;"></div>
-            <button onclick="animateFocusOnly()" style="background:var(--blue); margin-top:10px;">🔁 REPLAY STROKES</button>
-            <div style="margin-top: 10px; font-size: 11px; color: #aaa;">Tap outside to close</div>
+            <div id="focus-pinyin-val" style="font-size: 28px; color:var(--primary); font-weight:bold; margin-top:10px;"></div>
+            <button onclick="animateFocusOnly()" style="background:var(--blue); margin-top:15px; width: 100%;">🔁 REPLAY STROKES</button>
+            <div style="margin-top: 15px; font-size: 13px; color: #aaa;">Tap outside to close</div>
         </div>
     </div>
 
     <div id="game-page" class="page active">
         <div id="cardGrid" class="grid"></div>
-        <div style="margin-top:15px; display:flex; gap:10px; justify-content:center;">
-            <button id="backBtn" onclick="goBack()" style="background:var(--yellow); color:var(--text); width: 100px;" disabled>⬅️ BACK</button>
-            <button onclick="shufflePlay()" style="background:var(--secondary); width: 100px;">🔄 NEW</button>
-            <button onclick="togglePinyin('play')" style="background:var(--primary); width: 100px;">👀 PINYIN</button>
+        <div style="margin-top:20px; display:flex; gap:12px; justify-content:center; flex-wrap: wrap;">
+            <button id="backBtn" onclick="goBack()" style="background:var(--yellow); color:var(--text); min-width: 110px;" disabled>⬅️ BACK</button>
+            <button onclick="shufflePlay()" style="background:var(--secondary); min-width: 110px;">🔄 NEW</button>
+            <button onclick="togglePinyin('play')" style="background:var(--primary); min-width: 110px;">👀 PINYIN</button>
         </div>
     </div>
 
@@ -115,10 +127,10 @@
             <div class="hint" id="trace-msg">Watch... 👁️</div>
             <div class="trace-card"><div id="writer-container"></div></div>
             <div id="trace-pinyin" class="pinyin-label"></div>
-            <div style="display:flex; gap:10px; justify-content:center;">
-                <button onclick="replayStrokes()" style="background:var(--blue); width: 100px;">🔁 REPLAY</button>
-                <button onclick="togglePinyin('trace')" style="background:var(--primary); width: 100px;">👀 PINYIN</button>
-                <button onclick="newTraceChar()" style="background:var(--secondary); width: 100px;">🔄 NEXT</button>
+            <div style="display:flex; gap:12px; justify-content:center; flex-wrap: wrap;">
+                <button onclick="replayStrokes()" style="background:var(--blue); min-width: 110px;">🔁 REPLAY</button>
+                <button onclick="togglePinyin('trace')" style="background:var(--primary); min-width: 110px;">👀 PINYIN</button>
+                <button onclick="newTraceChar()" style="background:var(--secondary); min-width: 110px;">🔄 NEXT</button>
             </div>
         </div>
     </div>
@@ -126,21 +138,21 @@
     <div id="match-page" class="page">
         <div id="match-hint" class="hint">Find the pairs! 🧩</div>
         <div id="matchGrid" class="match-grid"></div>
-        <div style="margin-top:15px;">
-            <button id="match-next-btn" onclick="startMatchGame()" style="display:none; background:var(--secondary); min-width: 150px;">🎮 PLAY AGAIN</button>
+        <div style="margin-top:20px;">
+            <button id="match-next-btn" onclick="startMatchGame()" style="display:none; background:var(--secondary); min-width: 180px; font-size: 18px;">🎮 PLAY AGAIN</button>
         </div>
     </div>
 
     <div id="lib-page" class="page">
-        <div class="hint">Hold (2s) to see strokes 🔍</div>
+        <div class="hint">Tap to listen 🔉 and Hold (2s) to see strokes 🔍</div>
         <div id="libGrid" class="lib-grid"></div>
     </div>
 
     <div class="nav-bar">
-        <div class="nav-item active" onclick="showPage('game', this)">🎮<br>Play</div>
-        <div class="nav-item" onclick="showPage('trace', this)">✍️<br>Trace</div>
-        <div class="nav-item" onclick="showPage('match', this)">🧩<br>Match</div>
-        <div class="nav-item" onclick="showPage('lib', this)">📚<br>Lib</div>
+        <div class="nav-item active" onclick="showPage('game', this)"><i>🎮</i>Play</div>
+        <div class="nav-item" onclick="showPage('trace', this)"><i>✍️</i>Trace</div>
+        <div class="nav-item" onclick="showPage('match', this)"><i>🧩</i>Match</div>
+        <div class="nav-item" onclick="showPage('lib', this)"><i>📚</i>Lib</div>
     </div>
 
 <script>
@@ -157,9 +169,7 @@
 
     function toggleFullScreen() {
         if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(err => {
-                alert(`Error: ${err.message}`);
-            });
+            document.documentElement.requestFullscreen().catch(err => { console.log(err); });
             document.getElementById('fullscreenToggle').innerText = "❌ EXIT";
         } else {
             document.exitFullscreen();
@@ -200,6 +210,7 @@
     }
     function goBack() { if (playHistory.length > 0) { currentSet = playHistory.pop(); renderPlayCards(currentSet); updateBackBtn(); } }
     function updateBackBtn() { document.getElementById('backBtn').disabled = playHistory.length === 0; }
+    
     function renderPlayCards(chars) {
         const grid = document.getElementById('cardGrid'); grid.innerHTML = '';
         chars.forEach(c => {
@@ -215,9 +226,10 @@
         const pinyinEl = document.getElementById('trace-pinyin');
         pinyinEl.innerText = pinyinMap[currentTraceChar] || '';
         pinyinEl.classList.toggle('visible', tracePinyinVisible);
-        writer = HanziWriter.create('writer-container', currentTraceChar, { width: 180, height: 180, padding: 10, showOutline: true, strokeAnimationSpeed: 1.5, strokeColor: '#FF6B6B' });
+        writer = HanziWriter.create('writer-container', currentTraceChar, { width: 220, height: 220, padding: 10, showOutline: true, strokeAnimationSpeed: 1.5, strokeColor: '#FF6B6B' });
         replayStrokes();
     }
+
     function replayStrokes() {
         if (!writer) return;
         document.getElementById('trace-msg').innerText = "Watch... 👁️";
@@ -237,7 +249,7 @@
         const grid = document.getElementById('matchGrid'); grid.innerHTML = ''; let first = null, matches = 0;
         cards.forEach(d => {
             const el = document.createElement('div'); el.className = 'match-card';
-            el.innerHTML = d.type === 'c' ? `<div class="char-font" style="font-size:28px; font-weight:bold;">${d.val}</div>` : `<div style="color:var(--primary); font-weight:bold; font-size:14px;">${d.val}</div>`;
+            el.innerHTML = d.type === 'c' ? `<div class="char-font match-char-text">${d.val}</div>` : `<div class="match-pinyin-text">${d.val}</div>`;
             el.onclick = () => {
                 if(el.style.opacity === '0.2' || el.classList.contains('match-card-selected')) return;
                 el.classList.add('match-card-selected');
@@ -276,7 +288,7 @@
         document.getElementById('focus-writer-container').innerHTML = '';
         document.getElementById('focus-pinyin-val').innerText = pinyinMap[c] || '';
         document.getElementById('focus-overlay').style.display = 'flex';
-        focusWriter = HanziWriter.create('focus-writer-container', c, { width: 200, height: 200, padding: 10, showOutline: true, strokeColor: '#FF6B6B', strokeAnimationSpeed: 2 });
+        focusWriter = HanziWriter.create('focus-writer-container', c, { width: 220, height: 220, padding: 10, showOutline: true, strokeColor: '#FF6B6B', strokeAnimationSpeed: 2 });
         speak(c); focusWriter.animateCharacter();
     }
     function animateFocusOnly() { if (focusWriter) focusWriter.animateCharacter(); }
