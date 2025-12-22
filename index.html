@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ka Yan's Fun Card</title>
+    <title>Ka Yan's Learning Chinese is Fun</title>
     <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -20,106 +20,119 @@
             display: flex; flex-direction: column; align-items: center; min-height: 100vh;
         }
 
-        h1 { font-size: 22px; color: var(--primary); margin: 8px 0; font-family: 'Klee One', cursive; }
+        .header {
+            width: 100%; max-width: 900px; display: flex; justify-content: space-between;
+            align-items: center; padding: 10px 15px; box-sizing: border-box;
+        }
+
+        h1 { font-size: 18px; color: var(--primary); margin: 0; font-family: 'Klee One', cursive; }
+
+        .fullscreen-btn {
+            background: #eee; color: #666; font-size: 10px; padding: 5px 10px;
+            border-radius: 8px; border: 1px solid #ddd; cursor: pointer;
+        }
 
         .nav-bar {
             position: fixed; bottom: 0; width: 100%; background: white; 
-            display: flex; justify-content: space-around; padding: 10px 0;
+            display: flex; justify-content: space-around; padding: 6px 0;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100;
         }
 
-        .nav-item { font-family: 'Klee One', cursive; font-weight: bold; color: #888; cursor: pointer; font-size: 13px; text-align: center; }
+        .nav-item { font-family: 'Klee One', cursive; font-weight: bold; color: #888; cursor: pointer; font-size: 11px; text-align: center; }
         .nav-item.active { color: var(--primary); }
 
-        .page { display: none; width: 100%; max-width: 500px; padding: 5px 8px 90px 8px; text-align: center; box-sizing: border-box; }
+        .page { display: none; width: 100%; max-width: 500px; padding: 5px 10px 75px 10px; text-align: center; box-sizing: border-box; transition: max-width 0.3s; }
         .page.active { display: block; }
 
-        .hint { background: var(--yellow); padding: 6px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; display: inline-block; margin-bottom: 8px; }
+        .hint { background: var(--yellow); padding: 3px 10px; border-radius: 15px; font-size: 11px; font-weight: bold; display: inline-block; margin-bottom: 5px; }
         .char-font { font-family: "STKaiti", "KaiTi", "楷体", serif; }
         
-        /* Library Grid */
-        .lib-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; width: 100%; }
+        @media (min-width: 768px) {
+            .page { max-width: 900px; }
+            .grid { grid-template-columns: repeat(4, 1fr) !important; }
+            .match-grid { grid-template-columns: repeat(4, 1fr) !important; }
+            .lib-grid { grid-template-columns: repeat(8, 1fr) !important; }
+            .trace-card { padding: 20px !important; }
+            h1 { font-size: 24px; }
+        }
+
+        .lib-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; width: 100%; }
         .lib-item { 
-            background: white !important; border-radius: 10px; padding: 8px 0; 
+            background: white !important; border-radius: 8px; padding: 8px 0; 
             border: 1.5px solid var(--lib-border); display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; aspect-ratio: 1 / 1.1;
-            user-select: none; -webkit-tap-highlight-color: transparent;
+            align-items: center; justify-content: center; aspect-ratio: 1 / 1.15; 
+            user-select: none; cursor: pointer;
         }
-        .lib-char { font-size: 30px; font-weight: bold; line-height: 1; color: #000; }
-        .lib-pinyin { font-size: 10px; color: var(--primary); font-weight: bold; margin-top: 2px; }
+        .lib-char { font-size: 32px; font-weight: bold; line-height: 1; color: #000; }
+        .lib-pinyin { font-size: 9px; color: var(--primary); font-weight: bold; margin-top: 2px; }
 
-        /* Focus Mode Overlay */
-        #focus-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center;
-        }
-        .focus-card {
-            background: white; width: 80%; max-width: 300px; aspect-ratio: 1/1.2;
-            border-radius: 30px; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0,0,0,0.3);
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .focus-char { font-size: 150px; color: #000; line-height: 1; }
-        .focus-pinyin { font-size: 30px; color: var(--primary); font-weight: bold; margin-top: 10px; }
+        .trace-container { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .trace-card { background: white; border: 3px solid var(--secondary); border-radius: 15px; padding: 8px; box-shadow: 0 4px 0px var(--shadow); }
+        .pinyin-label { font-size: 18px; color: var(--primary); font-weight: 900; visibility: hidden; height: 22px; margin: 2px 0; }
+        .pinyin-label.visible { visibility: visible !important; }
 
-        /* Other Modes */
+        .match-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; width: 100%; }
+        .match-card { background: white; border-radius: 10px; border: 2px solid var(--secondary); display: flex; align-items: center; justify-content: center; aspect-ratio: 3 / 1; padding: 2px; cursor: pointer; }
+        .match-card-selected { background-color: var(--yellow) !important; border-color: var(--primary) !important; }
+
+        #focus-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center; flex-direction: column; }
+        .focus-card { background: white; width: 250px; padding: 15px; border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; }
-        .card { 
-            background: white; border-radius: 20px; min-height: 140px; padding: 15px; 
-            box-shadow: 0 5px 0px var(--shadow); border: 3px solid var(--secondary); 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;
-        }
-        .play-char { font-size: 70px; line-height: 1; color: #000; }
-        .pinyin-label { font-size: 20px; color: var(--primary); font-weight: 900; visibility: hidden; height: 24px; margin-top: 5px; }
-        .pinyin-label.visible { visibility: visible; }
+        .card { background: white; border-radius: 15px; min-height: 110px; box-shadow: 0 4px 0px var(--shadow); border: 3px solid var(--secondary); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
+        .play-char { font-size: 55px; line-height: 1; color: #000; }
         
-        .trace-card { background: white; border: 4px solid var(--secondary); border-radius: 25px; box-shadow: 0 6px 0px var(--shadow); padding: 10px; touch-action: none; }
-        button { padding: 10px 15px; border-radius: 15px; border: none; color: white; font-weight: bold; cursor: pointer; font-family: 'Klee One', cursive; box-shadow: 0 3px 0px rgba(0,0,0,0.1); font-size: 14px; }
+        button { padding: 8px 12px; border-radius: 12px; border: none; color: white; font-weight: bold; cursor: pointer; font-size: 12px; font-family: 'Klee One', cursive; box-shadow: 0 2px 0 rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
 
-    <h1>Ka Yan's Fun Card ✨</h1>
+    <div class="header">
+        <h1>Ka Yan's Fun Card ✨</h1>
+        <button id="fullscreenToggle" class="fullscreen-btn" onclick="toggleFullScreen()">🖥️ FULLSCREEN</button>
+    </div>
 
     <div id="focus-overlay" onclick="closeFocus()">
-        <div class="focus-card">
-            <div id="focus-char-val" class="char-font focus-char"></div>
-            <div id="focus-pinyin-val" class="focus-pinyin"></div>
-            <div style="margin-top: 20px; font-size: 12px; color: #888;">Tap to close</div>
+        <div class="focus-card" onclick="event.stopPropagation()">
+            <div id="focus-writer-container"></div>
+            <div id="focus-pinyin-val" style="font-size: 24px; color:var(--primary); font-weight:bold; margin-top:8px;"></div>
+            <button onclick="animateFocusOnly()" style="background:var(--blue); margin-top:10px;">🔁 REPLAY STROKES</button>
+            <div style="margin-top: 10px; font-size: 11px; color: #aaa;">Tap outside to close</div>
         </div>
     </div>
 
     <div id="game-page" class="page active">
         <div id="cardGrid" class="grid"></div>
-        <div style="margin-top:15px; display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
-            <button id="backBtn" onclick="goBack()" style="background:var(--yellow); color:var(--text)" disabled>⬅️ BACK</button>
-            <button onclick="shufflePlay()" style="background:var(--secondary)">🔄 NEW</button>
-            <button onclick="togglePinyin('play')" style="background:var(--primary)">👀 PINYIN</button>
+        <div style="margin-top:15px; display:flex; gap:10px; justify-content:center;">
+            <button id="backBtn" onclick="goBack()" style="background:var(--yellow); color:var(--text); width: 100px;" disabled>⬅️ BACK</button>
+            <button onclick="shufflePlay()" style="background:var(--secondary); width: 100px;">🔄 NEW</button>
+            <button onclick="togglePinyin('play')" style="background:var(--primary); width: 100px;">👀 PINYIN</button>
         </div>
     </div>
 
     <div id="trace-page" class="page">
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-            <div id="trace-msg" class="hint">Watch carefully... 👁️</div>
+        <div class="trace-container">
+            <div class="hint" id="trace-msg">Watch... 👁️</div>
             <div class="trace-card"><div id="writer-container"></div></div>
-            <div id="trace-pinyin" class="pinyin-label" style="height: 25px;"></div>
-            <div style="display:flex; gap:8px; justify-content:center; width: 100%;">
-                <button onclick="replayStrokes()" style="background:var(--blue)">🔁 REPLAY</button>
-                <button onclick="togglePinyin('trace')" style="background:var(--primary)">👀 PINYIN</button>
-                <button onclick="newTraceChar()" style="background:var(--secondary)">🔄 NEXT</button>
+            <div id="trace-pinyin" class="pinyin-label"></div>
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button onclick="replayStrokes()" style="background:var(--blue); width: 100px;">🔁 REPLAY</button>
+                <button onclick="togglePinyin('trace')" style="background:var(--primary); width: 100px;">👀 PINYIN</button>
+                <button onclick="newTraceChar()" style="background:var(--secondary); width: 100px;">🔄 NEXT</button>
             </div>
         </div>
     </div>
 
     <div id="match-page" class="page">
         <div id="match-hint" class="hint">Find the pairs! 🧩</div>
-        <div id="matchGrid" class="grid"></div>
-        <button id="match-next-btn" onclick="startMatchGame()" style="display:none; background:var(--secondary); margin-top:15px;">🎮 PLAY AGAIN</button>
+        <div id="matchGrid" class="match-grid"></div>
+        <div style="margin-top:15px;">
+            <button id="match-next-btn" onclick="startMatchGame()" style="display:none; background:var(--secondary); min-width: 150px;">🎮 PLAY AGAIN</button>
+        </div>
     </div>
 
     <div id="lib-page" class="page">
-        <div class="hint">Hold for Focus Mode 🔍</div>
+        <div class="hint">Hold (2s) to see strokes 🔍</div>
         <div id="libGrid" class="lib-grid"></div>
     </div>
 
@@ -135,12 +148,24 @@
     const charArray = rawList.split('');
     const pinyinMap = {'上':'shàng','下':'xià','大':'dà','小':'xiǎo','又':'yòu','了':'le','个':'gè','不':'bù','人':'rén','口':'kǒu','手':'shǒu','心':'xīn','牙':'yá','头':'tóu','舌':'shé','耳':'ěr','木':'mù','土':'tǔ','水':'shuǐ','火':'huǒ','山':'shān','天':'tiān','日':'rì','月':'yuè','刀':'dāo','尺':'chǐ','门':'mén','书':'shū','牛':'niú','羊':'yáng','马':'mǎ','只':'zhī','白':'bái','云':'yún','风':'fēng','雨':'yǔ','花':'huā','石':'shí','飞':'fēi','太':'tài','米':'mǐ','光':'guāng','毛':'máo','子':'zǐ','工':'gōng','几':'jǐ','力':'lì','气':'qì','里':'lǐ','外':'wài','没':'méi','有':'yǒu','把':'bǎ','的':'de','多':'duō','少':'shǎo','开':'kāi','关':'guān','去':'qù','来':'lái','什':'shén','么':'me','是':'shì','还':'hái','会':'huì','男':'nán','女':'nǚ','左':'zuǒ','右':'yòu','好':'hǎo','坏':'huài','在':'zài','这':'zhè','也':'yě','对':'duì','要':'yào','我':'wǒ','们':'men','你':'nǐ','他':'tā'};
 
-    let writer, currentTraceChar = "";
-    let matchesFound = 0;
+    let writer, focusWriter, currentTraceChar = "";
     let playPinyinVisible = false;
     let tracePinyinVisible = false;
     let playHistory = [];
     let currentSet = [];
+    let pressTimer;
+
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                alert(`Error: ${err.message}`);
+            });
+            document.getElementById('fullscreenToggle').innerText = "❌ EXIT";
+        } else {
+            document.exitFullscreen();
+            document.getElementById('fullscreenToggle').innerText = "🖥️ FULLSCREEN";
+        }
+    }
 
     function showPage(pageId, navEl) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -161,13 +186,12 @@
         if (mode === 'play') {
             playPinyinVisible = !playPinyinVisible;
             document.querySelectorAll('#game-page .pinyin-label').forEach(p => p.classList.toggle('visible', playPinyinVisible));
-        } else {
+        } else if (mode === 'trace') {
             tracePinyinVisible = !tracePinyinVisible;
             document.getElementById('trace-pinyin').classList.toggle('visible', tracePinyinVisible);
         }
     }
 
-    /* PLAY LOGIC */
     function shufflePlay() {
         if (currentSet.length > 0) playHistory.push([...currentSet]);
         currentSet = [...charArray].sort(() => 0.5 - Math.random()).slice(0, 4);
@@ -185,31 +209,47 @@
         });
     }
 
-    /* MATCH LOGIC */
+    function newTraceChar() {
+        currentTraceChar = charArray[Math.floor(Math.random() * charArray.length)];
+        document.getElementById('writer-container').innerHTML = '';
+        const pinyinEl = document.getElementById('trace-pinyin');
+        pinyinEl.innerText = pinyinMap[currentTraceChar] || '';
+        pinyinEl.classList.toggle('visible', tracePinyinVisible);
+        writer = HanziWriter.create('writer-container', currentTraceChar, { width: 180, height: 180, padding: 10, showOutline: true, strokeAnimationSpeed: 1.5, strokeColor: '#FF6B6B' });
+        replayStrokes();
+    }
+    function replayStrokes() {
+        if (!writer) return;
+        document.getElementById('trace-msg').innerText = "Watch... 👁️";
+        writer.cancelQuiz(); writer.animateCharacter({ onComplete: () => {
+            document.getElementById('trace-msg').innerText = "Your turn! ✍️";
+            writer.quiz({ onComplete: () => { speak(currentTraceChar); confetti({ particleCount: 30 }); }});
+        }});
+    }
+
     function startMatchGame() {
-        matchesFound = 0;
         document.getElementById('match-next-btn').style.display = 'none';
         document.getElementById('match-hint').innerText = "Find the pairs! 🧩";
         const selected = [...charArray].sort(() => 0.5 - Math.random()).slice(0, 4);
         let cards = [];
         selected.forEach(c => { cards.push({val: c, m: c, type: 'c'}); cards.push({val: pinyinMap[c], m: c, type: 'p'}); });
         cards.sort(() => 0.5 - Math.random());
-        const grid = document.getElementById('matchGrid'); grid.innerHTML = ''; let first = null;
+        const grid = document.getElementById('matchGrid'); grid.innerHTML = ''; let first = null, matches = 0;
         cards.forEach(d => {
-            const el = document.createElement('div'); el.className = 'card match-card';
-            el.innerHTML = d.type === 'c' ? `<div class="char-font" style="font-size:30px; font-weight:bold;">${d.val}</div>` : `<div style="color:var(--primary); font-weight:900; font-size:18px;">${d.val}</div>`;
+            const el = document.createElement('div'); el.className = 'match-card';
+            el.innerHTML = d.type === 'c' ? `<div class="char-font" style="font-size:28px; font-weight:bold;">${d.val}</div>` : `<div style="color:var(--primary); font-weight:bold; font-size:14px;">${d.val}</div>`;
             el.onclick = () => {
-                if(el.style.visibility === 'hidden' || el.classList.contains('match-card-selected')) return;
+                if(el.style.opacity === '0.2' || el.classList.contains('match-card-selected')) return;
                 el.classList.add('match-card-selected');
                 if(!first) { first = {el, d}; } else {
                     if(first.d.m === d.m) {
                         const c1 = first.el, c2 = el;
-                        setTimeout(() => { c1.style.visibility = 'hidden'; c2.style.visibility = 'hidden'; matchesFound++;
-                            if(matchesFound === 4) { document.getElementById('match-hint').innerText = "Awesome! 🌟"; document.getElementById('match-next-btn').style.display = 'inline-block'; confetti({ particleCount: 100, spread: 60, origin: { y: 0.6 } }); }
-                        }, 400); speak(d.m);
+                        setTimeout(() => { c1.style.opacity = '0.2'; c2.style.opacity = '0.2'; matches++;
+                            if(matches === 4) { document.getElementById('match-hint').innerText = "Awesome! 🌟"; document.getElementById('match-next-btn').style.display = 'inline-block'; confetti({ particleCount: 80 }); }
+                        }, 300); speak(d.m);
                     } else {
                         const c1 = first.el, c2 = el;
-                        setTimeout(() => { c1.classList.remove('match-card-selected'); c2.classList.remove('match-card-selected'); }, 600);
+                        setTimeout(() => { c1.classList.remove('match-card-selected'); c2.classList.remove('match-card-selected'); }, 500);
                     }
                     first = null;
                 }
@@ -218,63 +258,29 @@
         });
     }
 
-    /* TRACE LOGIC */
-    function newTraceChar() {
-        currentTraceChar = charArray[Math.floor(Math.random() * charArray.length)];
-        document.getElementById('writer-container').innerHTML = '';
-        document.getElementById('trace-pinyin').innerText = pinyinMap[currentTraceChar] || '';
-        writer = HanziWriter.create('writer-container', currentTraceChar, {
-            width: 250, height: 250, padding: 15, showOutline: true,
-            strokeAnimationSpeed: 1.5, delayBetweenStrokes: 250,
-            strokeColor: '#FF6B6B', drawingColor: '#2F2F2F', drawingThickness: 12
-        });
-        replayStrokes();
-    }
-    function replayStrokes() {
-        if (!writer) return;
-        document.getElementById('trace-msg').innerText = "Watch carefully... 👁️";
-        writer.cancelQuiz(); writer.hideCharacter();
-        writer.animateCharacter({ onComplete: () => {
-            document.getElementById('trace-msg').innerText = "Your turn! ✍️";
-            writer.quiz({ onComplete: () => { 
-                document.getElementById('trace-msg').innerText = "Perfect! 🌟"; speak(currentTraceChar);
-                confetti({ particleCount: 40, spread: 50, origin: { y: 0.8 } });
-            }});
-        }});
-    }
-
-    /* LIBRARY LOGIC with LONG PRESS FOCUS */
-    let pressTimer;
     function renderLib() {
         const grid = document.getElementById('libGrid');
         charArray.forEach((c) => {
             const item = document.createElement('div'); 
             item.className = 'lib-item';
             item.innerHTML = `<div class="char-font lib-char">${c}</div><div class="lib-pinyin">${pinyinMap[c]||''}</div>`;
-            
-            // Touch handlers for 2-second hold
-            item.ontouchstart = () => {
-                pressTimer = window.setTimeout(() => openFocus(c), 2000);
-            };
-            item.ontouchend = () => {
-                window.clearTimeout(pressTimer);
-            };
-            // Fallback for click (speak)
-            item.onclick = () => speak(c); 
-            grid.appendChild(item);
+            const startPress = () => { pressTimer = window.setTimeout(() => openFocus(c), 2000); };
+            const endPress = () => { window.clearTimeout(pressTimer); };
+            item.ontouchstart = startPress; item.ontouchend = endPress;
+            item.onmousedown = startPress; item.onmouseup = endPress;
+            item.onclick = () => speak(c); grid.appendChild(item);
         });
     }
 
     function openFocus(c) {
-        document.getElementById('focus-char-val').innerText = c;
+        document.getElementById('focus-writer-container').innerHTML = '';
         document.getElementById('focus-pinyin-val').innerText = pinyinMap[c] || '';
         document.getElementById('focus-overlay').style.display = 'flex';
-        speak(c);
+        focusWriter = HanziWriter.create('focus-writer-container', c, { width: 200, height: 200, padding: 10, showOutline: true, strokeColor: '#FF6B6B', strokeAnimationSpeed: 2 });
+        speak(c); focusWriter.animateCharacter();
     }
-
-    function closeFocus() {
-        document.getElementById('focus-overlay').style.display = 'none';
-    }
+    function animateFocusOnly() { if (focusWriter) focusWriter.animateCharacter(); }
+    function closeFocus() { document.getElementById('focus-overlay').style.display = 'none'; }
 
     shufflePlay(); renderLib();
 </script>
