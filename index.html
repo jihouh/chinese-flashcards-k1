@@ -6,6 +6,7 @@
     <title>Ka Yan's Fun Card</title>
     <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --primary: #FF6B6B; --secondary: #4ECDC4; --yellow: #FFE66D;
@@ -18,51 +19,59 @@
             display: flex; flex-direction: column; align-items: center; min-height: 100vh;
         }
 
-        h1 { font-size: 26px; color: var(--primary); margin: 15px 0 5px 0; font-family: 'Klee One', cursive; }
+        h1 { font-size: 24px; color: var(--primary); margin: 10px 0; font-family: 'Klee One', cursive; }
 
         .nav-bar {
             position: fixed; bottom: 0; width: 100%; background: white; 
-            display: flex; justify-content: space-around; padding: 12px 0;
+            display: flex; justify-content: space-around; padding: 10px 0;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100;
         }
 
-        .nav-item { font-family: 'Klee One', cursive; font-weight: bold; color: #888; cursor: pointer; font-size: 14px; text-align: center; }
+        .nav-item { font-family: 'Klee One', cursive; font-weight: bold; color: #888; cursor: pointer; font-size: 13px; text-align: center; }
         .nav-item.active { color: var(--primary); }
 
-        .page { display: none; width: 100%; max-width: 800px; padding: 10px 10px 100px 10px; text-align: center; box-sizing: border-box; }
+        .page { display: none; width: 100%; max-width: 500px; padding: 5px 15px 80px 15px; text-align: center; box-sizing: border-box; }
         .page.active { display: block; }
 
-        .hint { background: var(--yellow); padding: 10px 20px; border-radius: 20px; font-size: 15px; font-weight: bold; display: inline-block; margin-bottom: 15px; transition: all 0.3s ease; }
-        .hint.success { background: #2ecc71; color: white; transform: scale(1.1); }
+        .hint { background: var(--yellow); padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
 
-        /* Play Mode */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .card { background: white; border-radius: 25px; padding: 30px 10px; box-shadow: 0 6px 0px var(--shadow); border: 4px solid var(--secondary); display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .play-char { font-size: 90px; line-height: 1; }
-        .pinyin-label { margin-top: 10px; font-size: 22px; color: var(--primary); font-weight: 900; visibility: hidden; }
+        .char-font { font-family: "STKaiti", "KaiTi", "楷体", serif; }
+        
+        /* Layout Fixes */
+        .column-layout { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; }
+        
+        /* Play Card */
+        .card { 
+            background: white; border-radius: 20px; 
+            min-height: 140px; padding: 15px; 
+            box-shadow: 0 5px 0px var(--shadow); border: 3px solid var(--secondary); 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s ease;
+        }
+
+        /* Match Card - Compact */
+        .match-card {
+            min-height: 80px !important;
+            padding: 10px !important;
+            border-radius: 15px !important;
+        }
+
+        .play-char { font-size: 70px; line-height: 1; }
+        .pinyin-label { font-size: 20px; color: var(--primary); font-weight: 900; visibility: hidden; height: 24px; margin-top: 5px; }
         .pinyin-label.visible { visibility: visible; }
 
-        /* Trace Mode Enhanced */
-        .trace-card {
-            background: white; border: 5px solid var(--secondary); 
-            border-radius: 30px; box-shadow: 0 8px 0px var(--shadow);
-            margin: 0 auto; display: inline-block; padding: 15px;
-            touch-action: none; background-image: radial-gradient(#eee 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-        
-        .trace-btn-group { margin-top: 20px; display: flex; gap: 12px; justify-content: center; }
-        
-        button { padding: 12px 20px; border-radius: 18px; border: none; color: white; font-weight: bold; cursor: pointer; font-family: 'Klee One', cursive; box-shadow: 0 4px 0px rgba(0,0,0,0.1); }
-        .btn-next { background: var(--secondary); }
-        .btn-replay { background: var(--blue); }
-        .btn-quiz { background: var(--primary); }
-        button:active { transform: translateY(3px); box-shadow: none; }
+        .match-card-selected { background-color: var(--yellow) !important; border-color: var(--primary) !important; transform: scale(1.02); }
+        .match-pinyin-text { color: var(--primary); font-weight: 900; font-size: 20px; }
 
-        /* Library & Match */
-        .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; }
-        .lib-item { background: white; border-radius: 12px; padding: 10px 5px; border: 2px solid #eee; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .char-font { font-family: "STKaiti", "KaiTi", "楷体", serif; }
+        button { padding: 10px 15px; border-radius: 15px; border: none; color: white; font-weight: bold; cursor: pointer; font-family: 'Klee One', cursive; box-shadow: 0 3px 0px rgba(0,0,0,0.1); font-size: 14px; }
+        button:disabled { background: #ccc !important; opacity: 0.6; }
+        
+        .trace-card { background: white; border: 4px solid var(--secondary); border-radius: 25px; box-shadow: 0 6px 0px var(--shadow); padding: 10px; touch-action: none; }
+        
+        .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 5px; }
+        .lib-item { background: white; border-radius: 10px; padding: 8px 4px; border: 1px solid #eee; display: flex; flex-direction: column; align-items: center; }
     </style>
 </head>
 <body>
@@ -71,26 +80,35 @@
 
     <div id="game-page" class="page active">
         <div id="cardGrid" class="grid"></div>
-        <div style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-            <button onclick="shufflePlay()" class="btn-next">🔄 NEW</button>
-            <button onclick="togglePinyin()" class="btn-quiz">👀 PINYIN</button>
+        <div style="margin-top:15px; display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
+            <button id="backBtn" onclick="goBack()" style="background:var(--yellow); color:var(--text)" disabled>⬅️ BACK</button>
+            <button onclick="shufflePlay()" style="background:var(--secondary)">🔄 NEW</button>
+            <button onclick="togglePinyin('play')" style="background:var(--primary)">👀 PINYIN</button>
         </div>
     </div>
 
     <div id="trace-page" class="page">
-        <div id="trace-msg" class="hint">Watch carefully... 👁️</div>
-        <br>
-        <div class="trace-card">
-            <div id="writer-container"></div>
-        </div>
-        <div class="trace-btn-group">
-            <button class="btn-replay" onclick="replayStrokes()">🔁 REPLAY</button>
-            <button class="btn-next" onclick="newTraceChar()">🔄 NEXT</button>
+        <div class="column-layout">
+            <div id="trace-msg" class="hint">Watch carefully... 👁️</div>
+            
+            <div class="trace-card">
+                <div id="writer-container"></div>
+            </div>
+
+            <div id="trace-pinyin" class="pinyin-label" style="height: 30px;"></div>
+
+            <div style="display:flex; gap:8px; justify-content:center; width: 100%;">
+                <button onclick="replayStrokes()" style="background:var(--blue)">🔁 REPLAY</button>
+                <button onclick="togglePinyin('trace')" style="background:var(--primary)">👀 PINYIN</button>
+                <button onclick="newTraceChar()" style="background:var(--secondary)">🔄 NEXT</button>
+            </div>
         </div>
     </div>
 
     <div id="match-page" class="page">
-        <div id="matchGrid" class="grid" style="grid-template-columns: repeat(2, 1fr);"></div>
+        <div id="match-hint" class="hint">Find the pairs! 🧩</div>
+        <div id="matchGrid" class="grid"></div>
+        <button id="match-next-btn" onclick="startMatchGame()" style="display:none; background:var(--secondary); margin-top:15px;">🎮 PLAY AGAIN</button>
     </div>
 
     <div id="lib-page" class="page">
@@ -105,12 +123,16 @@
     </div>
 
 <script>
-    const rawList = "上下大小又了个不人口手心牙头舌耳木土水火山天日月刀尺门书牛羊马只白云风雨花石飞太米光毛子工几力气里外没有把的多少开关去来什麼還會男女左右好壞在這也對要是我們你他";
+    const rawList = "上下大小又了个不人口手心牙头舌耳木土水火山天日月刀尺门书牛羊马只白云风雨花石飞太米光毛子工几力气里外没有把的多少开关去来什么是还会男女左右好坏在这也对要是我们你他";
     const charArray = rawList.split('');
-    const pinyinMap = {'上':'shàng','下':'xià','大':'dà','小':'xiǎo','又':'yòu','了':'le','个':'gè','不':'bù','人':'rén','口':'kǒu','手':'shǒu','心':'xīn','牙':'yá','头':'tóu','舌':'shé','耳':'ěr','木':'mù','土':'tǔ','水':'shuǐ','火':'huǒ','山':'shān','天':'tiān','日':'rì','月':'yuè','刀':'dāo','尺':'chǐ','门':'mén','书':'shū','牛':'niú','羊':'yáng','马':'mǎ','只':'zhī','白':'bái','云':'yún','风':'fēng','雨':'yǔ','花':'huā','石':'shí','飞':'fēi','太':'tài','米':'mǐ','光':'guāng','毛':'máo','子':'zǐ','工':'gōng','几':'jǐ','力':'lì','气':'qì','里':'lǐ','外':'wài','没':'méi','有':'yǒu','把':'bǎ','的':'de','多':'duō','少':'shǎo','开':'kāi','关':'guān','去':'qù','来':'lái','什':'shén','么':'me','还':'hái','会':'huì','男':'nán','女':'nǚ','左':'zuǒ','右':'yòu','好':'hǎo','坏':'huài','在':'zài','这':'zhè','也':'yě','对':'duì','要':'yào','是':'shì','我':'wǒ','们':'men','你':'nǐ','他':'tā'};
+    const pinyinMap = {'上':'shàng','下':'xià','大':'dà','小':'xiǎo','又':'yòu','了':'le','个':'gè','不':'bù','人':'rén','口':'kǒu','手':'shǒu','心':'xīn','牙':'yá','头':'tóu','舌':'shé','耳':'ěr','木':'mù','土':'tǔ','水':'shuǐ','火':'huǒ','山':'shān','天':'tiān','日':'rì','月':'yuè','刀':'dāo','尺':'chǐ','门':'mén','书':'shū','牛':'niú','羊':'yáng','马':'mǎ','只':'zhī','白':'bái','云':'yún','风':'fēng','雨':'yǔ','花':'huā','石':'shí','飞':'fēi','太':'tài','米':'mǐ','光':'guāng','毛':'máo','子':'zǐ','工':'gōng','几':'jǐ','力':'lì','气':'qì','里':'lǐ','外':'wài','没':'méi','有':'yǒu','把':'bǎ','的':'de','多':'duō','少':'shǎo','开':'kāi','关':'guān','去':'qù','来':'lái','什':'shén','么':'me','是':'shì','还':'hái','会':'huì','男':'nán','女':'nǚ','左':'zuǒ','右':'yòu','好':'hǎo','坏':'huài','在':'zài','这':'zhè','也':'yě','对':'duì','要':'yào','我':'wǒ','们':'men','你':'nǐ','他':'tā'};
 
-    let writer;
-    let currentTraceChar = "";
+    let writer, currentTraceChar = "";
+    let matchesFound = 0;
+    let playPinyinVisible = false;
+    let tracePinyinVisible = false;
+    let playHistory = [];
+    let currentSet = [];
 
     function showPage(pageId, navEl) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -127,98 +149,101 @@
         window.speechSynthesis.speak(u);
     }
 
-    /* TRACE LOGIC */
-    function newTraceChar() {
-        currentTraceChar = charArray[Math.floor(Math.random() * charArray.length)];
-        document.getElementById('writer-container').innerHTML = '';
-        const msg = document.getElementById('trace-msg');
-        msg.classList.remove('success');
-        
-        writer = HanziWriter.create('writer-container', currentTraceChar, {
-            width: 300,
-            height: 300,
-            padding: 25,
-            showOutline: true,
-            strokeAnimationSpeed: 1.5,
-            delayBetweenStrokes: 250,
-            strokeColor: '#FF6B6B', // Red for animation
-            outlineColor: '#f3f3f3',
-            drawingColor: '#2F2F2F', // Dark for user ink
-            drawingThickness: 14,    // BOLDER THICKNESS
-            highlightColor: '#4ECDC4'
-        });
-        replayStrokes();
+    function togglePinyin(mode) {
+        if (mode === 'play') {
+            playPinyinVisible = !playPinyinVisible;
+            document.querySelectorAll('#game-page .pinyin-label').forEach(p => p.classList.toggle('visible', playPinyinVisible));
+        } else {
+            tracePinyinVisible = !tracePinyinVisible;
+            document.getElementById('trace-pinyin').classList.toggle('visible', tracePinyinVisible);
+        }
     }
 
-    function replayStrokes() {
-        if (!writer) return;
-        const msg = document.getElementById('trace-msg');
-        msg.innerText = "Watch the strokes... 👁️";
-        msg.classList.remove('success');
-        writer.cancelQuiz();
-        writer.hideCharacter();
-        writer.animateCharacter({
-            onComplete: () => {
-                msg.innerText = "Your turn! Trace it! ✍️";
-                startQuiz();
-            }
-        });
-    }
-
-    function startQuiz() {
-        const msg = document.getElementById('trace-msg');
-        writer.quiz({
-            onMistake: () => { msg.innerText = "Try again! Follow the guide."; },
-            onCorrectStroke: () => { msg.innerText = "Good! Next stroke..."; },
-            onComplete: () => {
-                msg.innerText = "Perfect! 🌟";
-                msg.classList.add('success');
-                speak(currentTraceChar);
-            }
-        });
-    }
-
-    /* PLAY/MATCH/LIB REUSED */
+    /* PLAY LOGIC */
     function shufflePlay() {
-        const selected = [...charArray].sort(() => 0.5 - Math.random()).slice(0, 4);
-        const grid = document.getElementById('cardGrid');
-        grid.innerHTML = '';
-        selected.forEach(c => {
+        if (currentSet.length > 0) playHistory.push([...currentSet]);
+        currentSet = [...charArray].sort(() => 0.5 - Math.random()).slice(0, 4);
+        renderPlayCards(currentSet);
+        updateBackBtn();
+    }
+    function goBack() { if (playHistory.length > 0) { currentSet = playHistory.pop(); renderPlayCards(currentSet); updateBackBtn(); } }
+    function updateBackBtn() { document.getElementById('backBtn').disabled = playHistory.length === 0; }
+    function renderPlayCards(chars) {
+        const grid = document.getElementById('cardGrid'); grid.innerHTML = '';
+        chars.forEach(c => {
             const card = document.createElement('div'); card.className = 'card';
-            card.innerHTML = `<div class="char-font play-char">${c}</div><div class="pinyin-label">${pinyinMap[c]}</div>`;
-            card.onclick = () => speak(c);
-            grid.appendChild(card);
+            card.innerHTML = `<div class="char-font play-char">${c}</div><div class="pinyin-label ${playPinyinVisible?'visible':''}">${pinyinMap[c]||''}</div>`;
+            card.onclick = () => speak(c); grid.appendChild(card);
         });
     }
-    function togglePinyin() { document.querySelectorAll('.pinyin-label').forEach(p => p.classList.toggle('visible')); }
+
+    /* MATCH LOGIC - COMPACT HEIGHT */
     function startMatchGame() {
+        matchesFound = 0;
+        document.getElementById('match-next-btn').style.display = 'none';
+        document.getElementById('match-hint').innerText = "Find the pairs! 🧩";
         const selected = [...charArray].sort(() => 0.5 - Math.random()).slice(0, 4);
-        let cards = []; selected.forEach(c => { cards.push({val: c, m: c, type: 'c'}); cards.push({val: pinyinMap[c], m: c, type: 'p'}); });
+        let cards = [];
+        selected.forEach(c => { cards.push({val: c, m: c, type: 'c'}); cards.push({val: pinyinMap[c], m: c, type: 'p'}); });
         cards.sort(() => 0.5 - Math.random());
-        const grid = document.getElementById('matchGrid'); grid.innerHTML = '';
-        let first = null;
+        const grid = document.getElementById('matchGrid'); grid.innerHTML = ''; let first = null;
         cards.forEach(d => {
-            const el = document.createElement('div'); el.className = 'card'; el.style.padding = '20px 5px';
-            el.innerHTML = `<div class="${d.type==='c'?'char-font':''}" style="font-size:${d.type==='c'?'40px':'18px'}; font-weight:bold;">${d.val}</div>`;
+            const el = document.createElement('div'); el.className = 'card match-card';
+            el.innerHTML = d.type === 'c' ? `<div class="char-font" style="font-size:32px; font-weight:bold;">${d.val}</div>` : `<div class="match-pinyin-text">${d.val}</div>`;
             el.onclick = () => {
-                if(el.style.visibility === 'hidden' || el === first) return;
-                el.style.borderColor = 'var(--yellow)';
+                if(el.style.visibility === 'hidden' || el.classList.contains('match-card-selected')) return;
+                el.classList.add('match-card-selected');
                 if(!first) { first = {el, d}; } else {
-                    if(first.d.m === d.m) { setTimeout(() => { el.style.visibility = 'hidden'; first.el.style.visibility = 'hidden'; first = null; }, 300); speak(d.m); }
-                    else { setTimeout(() => { el.style.borderColor = 'var(--secondary)'; first.el.style.borderColor = 'var(--secondary)'; first = null; }, 500); }
+                    if(first.d.m === d.m) {
+                        const c1 = first.el, c2 = el;
+                        setTimeout(() => { c1.style.visibility = 'hidden'; c2.style.visibility = 'hidden'; matchesFound++;
+                            if(matchesFound === 4) { document.getElementById('match-hint').innerText = "Awesome! 🌟"; document.getElementById('match-next-btn').style.display = 'inline-block'; confetti({ particleCount: 100, spread: 60, origin: { y: 0.6 } }); }
+                        }, 400); speak(d.m);
+                    } else {
+                        const c1 = first.el, c2 = el;
+                        setTimeout(() => { c1.classList.remove('match-card-selected'); c2.classList.remove('match-card-selected'); }, 600);
+                    }
+                    first = null;
                 }
             };
             grid.appendChild(el);
         });
     }
+
+    /* TRACE LOGIC */
+    function newTraceChar() {
+        currentTraceChar = charArray[Math.floor(Math.random() * charArray.length)];
+        document.getElementById('writer-container').innerHTML = '';
+        document.getElementById('trace-pinyin').innerText = pinyinMap[currentTraceChar] || '';
+        writer = HanziWriter.create('writer-container', currentTraceChar, {
+            width: 260, height: 260, padding: 20, showOutline: true,
+            strokeAnimationSpeed: 1.5, delayBetweenStrokes: 250,
+            strokeColor: '#FF6B6B', drawingColor: '#2F2F2F', drawingThickness: 12
+        });
+        replayStrokes();
+    }
+    function replayStrokes() {
+        if (!writer) return;
+        document.getElementById('trace-msg').innerText = "Watch carefully... 👁️";
+        writer.cancelQuiz(); writer.hideCharacter();
+        writer.animateCharacter({ onComplete: () => {
+            document.getElementById('trace-msg').innerText = "Your turn! ✍️";
+            writer.quiz({ onComplete: () => { 
+                document.getElementById('trace-msg').innerText = "Perfect! 🌟"; speak(currentTraceChar);
+                confetti({ particleCount: 40, spread: 50, origin: { y: 0.8 } });
+            }});
+        }});
+    }
+
     function renderLib() {
         const grid = document.getElementById('libGrid');
         charArray.forEach(c => {
             const item = document.createElement('div'); item.className = 'lib-item';
-            item.innerHTML = `<div class="char-font" style="font-size:24px;">${c}</div><div style="font-size:10px; color:var(--primary); font-weight:bold;">${pinyinMap[c]}</div>`;
+            item.innerHTML = `<div class="char-font" style="font-size:20px;">${c}</div><div style="font-size:9px; color:var(--primary); font-weight:bold;">${pinyinMap[c]||''}</div>`;
             item.onclick = () => speak(c); grid.appendChild(item);
         });
     }
+
     shufflePlay(); renderLib();
 </script>
 </body>
