@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -11,7 +12,7 @@
         :root {
             --primary: #FF6B6B; --secondary: #4ECDC4; --yellow: #FFE66D;
             --blue: #45aaf2; --bg: #F7FFF7; --text: #2F2F2F; --shadow: #d4e5d4;
-            --lib-border: #e8e8e8; --purple: #a55eea;
+            --lib-border: #e8e8e8; --purple: #a55eea; --gold: #FFD700;
         }
 
         body {
@@ -26,6 +27,12 @@
         }
 
         h1 { font-size: 20px; color: var(--primary); margin: 0; font-family: 'Klee One', cursive; font-weight: 600; }
+
+        .progress-banner {
+            background: white; padding: 10px 20px; border-radius: 50px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-top: 10px;
+            font-weight: bold; color: var(--purple); border: 2px solid var(--purple);
+        }
 
         .fullscreen-btn {
             background: #eee; color: #666; font-size: 12px; padding: 8px 12px;
@@ -45,110 +52,92 @@
         .page { display: none; width: 100%; max-width: 500px; padding: 5px 10px 100px 10px; text-align: center; box-sizing: border-box; }
         .page.active { display: flex; flex-direction: column; align-items: center; }
 
-        .welcome-container { padding: 20px; text-align: center; width: 100%; }
-        
-        /* UPDATED QUOTE BOX */
         .quote-box { 
             background: white; padding: 25px; border-radius: 20px; 
             border: 3px dashed var(--secondary); margin: 20px 0; 
             box-shadow: 0 10px 20px rgba(0,0,0,0.05); min-height: 80px; 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: transform 0.2s, background-color 0.2s;
+            cursor: pointer; transition: transform 0.2s;
         }
-        .quote-box:active { transform: scale(0.98); background-color: #f0fff0; }
         .quote-box p { font-family: 'Klee One', cursive; font-size: 19px; color: #444; line-height: 1.4; margin: 0; font-weight: 600; }
         .speaker-hint { font-size: 14px; color: var(--secondary); margin-top: 8px; font-weight: bold; }
 
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-top: 10px; }
-        .menu-btn { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 25px 10px; border-radius: 25px; border: none; color: white; cursor: pointer;
-            box-shadow: 0 6px 0 rgba(0,0,0,0.1); transition: transform 0.1s;
-        }
-        .menu-btn i { font-size: 40px; margin-bottom: 10px; font-style: normal; }
-        .menu-btn span { font-size: 18px; font-family: 'Klee One', cursive; font-weight: bold; }
-
-        .hint { background: var(--yellow); padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; display: inline-block; margin-bottom: 10px; }
-        .char-font { font-family: "STKaiti", "KaiTi", "楷体", serif; }
-        
-        /* GRID STYLES */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; }
         .card { background: white; border-radius: 20px; min-height: 130px; box-shadow: 0 6px 0px var(--shadow); border: 4px solid var(--secondary); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
         .play-char { font-size: 65px; line-height: 1; color: #000; }
-        .lib-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; width: 100%; }
-        .lib-item { background: white; border-radius: 12px; padding: 10px 0; border: 2px solid var(--lib-border); display: flex; flex-direction: column; align-items: center; justify-content: center; aspect-ratio: 1/1.15; cursor: pointer; }
-        .lib-char { font-size: 36px; font-weight: bold; color: #000; }
-        .lib-pinyin { font-size: 11px; color: var(--primary); font-weight: bold; }
+        
+        .lib-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; }
+        .lib-item { 
+            background: white; border-radius: 12px; padding: 10px 0; border: 2px solid var(--lib-border); 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            aspect-ratio: 1/1.2; cursor: pointer; position: relative; user-select: none;
+        }
+        .lib-star { position: absolute; top: 2px; right: 4px; font-size: 10px; font-weight: bold; }
+        .lib-char { font-size: 32px; font-weight: bold; color: #000; pointer-events: none; }
+        .lib-pinyin { font-size: 10px; color: var(--primary); font-weight: bold; pointer-events: none; }
+
         .match-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; }
-        .match-card { background: white; border-radius: 15px; border: 3px solid var(--secondary); display: flex; align-items: center; justify-content: center; aspect-ratio: 2.2 / 1; padding: 10px; cursor: pointer; }
-        .match-char-text { font-size: 48px; font-weight: bold; color: #000; }
-        .match-pinyin-text { font-size: 22px; color: var(--primary); font-weight: 900; }
+        .match-card { background: white; border-radius: 15px; border: 3px solid var(--secondary); display: flex; align-items: center; justify-content: center; aspect-ratio: 2.2 / 1; cursor: pointer; }
         .match-card-selected { background-color: var(--yellow) !important; border-color: var(--primary) !important; }
 
-        button.action-btn { padding: 12px 20px; border-radius: 15px; border: none; color: white; font-weight: 900; cursor: pointer; font-size: 14px; font-family: 'Klee One', cursive; box-shadow: 0 4px 0 rgba(0,0,0,0.1); }
-        #focus-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 200; align-items: center; justify-content: center; }
-        .focus-card { background: white; width: 280px; padding: 20px; border-radius: 30px; display: flex; flex-direction: column; align-items: center; }
+        button.action-btn { padding: 12px 15px; border-radius: 15px; border: none; color: white; font-weight: 900; cursor: pointer; font-family: 'Klee One', cursive; box-shadow: 0 4px 0 rgba(0,0,0,0.1); font-size: 13px; }
+        
+        /* FOCUS OVERLAY STYLES */
+        #focus-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center; }
+        .focus-card { background: white; width: 280px; padding: 25px; border-radius: 30px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        #focus-writer-container { background: #f9f9f9; border-radius: 15px; border: 2px solid var(--lib-border); margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>Ka Yan's Chinese ✨</h1>
+        <h1>Ka Yan's Learning Chinese is Fun ✨</h1>
         <button id="fullscreenToggle" class="fullscreen-btn" onclick="toggleFullScreen()">🖥️ FULLSCREEN</button>
     </div>
 
     <div id="home-page" class="page active">
-        <div class="welcome-container">
-            <h2 style="font-family: 'Klee One', cursive; color: var(--primary); font-size: 28px; margin-bottom: 0;">Hi Ka Yan! 👋</h2>
-            <div class="quote-box" onclick="readQuoteOutLoud()">
-                <p id="motivational-quote">Loading magic words...</p>
-                <div class="speaker-hint">Tap to hear me! 🔉</div>
-            </div>
-            <div class="menu-grid">
-                <div class="menu-btn" style="background: var(--secondary);" onclick="showPage('game', document.getElementById('nav-game'))">
-                    <i>📖</i><span>Learn</span>
-                </div>
-                <div class="menu-btn" style="background: var(--blue);" onclick="showPage('trace', document.getElementById('nav-trace'))">
-                    <i>✍️</i><span>Trace</span>
-                </div>
-                <div class="menu-btn" style="background: var(--purple);" onclick="showPage('match', document.getElementById('nav-match'))">
-                    <i>🧩</i><span>Match</span>
-                </div>
-                <div class="menu-btn" style="background: var(--primary);" onclick="showPage('lib', document.getElementById('nav-lib'))">
-                    <i>📚</i><span>Library</span>
-                </div>
-            </div>
+        <h2 style="font-family: 'Klee One', cursive; color: var(--primary); font-size: 28px; margin-bottom: 0;">Hi Ka Yan! 👋</h2>
+        <div id="mastery-banner" class="progress-banner">🌟 0 Stars Collected</div>
+        <div class="quote-box" onclick="readQuoteOutLoud()">
+            <p id="motivational-quote">Loading magic words...</p>
+            <div class="speaker-hint">Tap to hear me! 🔉</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%;">
+            <button class="action-btn" style="background: var(--secondary); height: 90px; font-size: 18px;" onclick="showPage('game', document.getElementById('nav-game'))">📖 Learn</button>
+            <button class="action-btn" style="background: var(--blue); height: 90px; font-size: 18px;" onclick="showPage('trace', document.getElementById('nav-trace'))">✍️ Trace</button>
+            <button class="action-btn" style="background: var(--purple); height: 90px; font-size: 18px;" onclick="showPage('match', document.getElementById('nav-match'))">🧩 Match</button>
+            <button class="action-btn" style="background: var(--primary); height: 90px; font-size: 18px;" onclick="showPage('lib', document.getElementById('nav-lib'))">📚 Lib</button>
         </div>
     </div>
 
     <div id="game-page" class="page">
         <div id="cardGrid" class="grid"></div>
-        <div style="margin-top:20px; display:flex; gap:12px; justify-content:center; flex-wrap: wrap;">
-            <button id="backBtn" class="action-btn" onclick="goBack()" style="background:var(--yellow); color:var(--text); min-width: 100px;" disabled>⬅️ BACK</button>
-            <button class="action-btn" onclick="shufflePlay()" style="background:var(--secondary); min-width: 100px;">🔄 NEW</button>
-            <button class="action-btn" onclick="togglePinyin('play')" style="background:var(--primary); min-width: 100px;">👀 PINYIN</button>
+        <div style="margin-top:20px; display:flex; gap:10px; justify-content:center; flex-wrap: wrap;">
+            <button id="backBtn" class="action-btn" onclick="goBack()" style="background:var(--yellow); color:var(--text); min-width: 80px;" disabled>⬅️ BACK</button>
+            <button class="action-btn" onclick="shufflePlay()" style="background:var(--secondary); min-width: 80px;">🔄 NEW</button>
+            <button class="action-btn" onclick="togglePinyin('play')" style="background:var(--primary); min-width: 80px;">👀 PINYIN</button>
         </div>
     </div>
 
     <div id="trace-page" class="page">
-        <div class="hint" id="trace-msg">Watch... 👁️</div>
+        <div id="trace-msg" class="progress-banner" style="margin-bottom:10px;">Watch... 👁️</div>
         <div style="background:white; padding:15px; border-radius:20px; border:4px solid var(--secondary); margin-bottom:15px;"><div id="writer-container"></div></div>
-        <div id="trace-pinyin" style="font-size:22px; color:var(--primary); font-weight:900; visibility:hidden; height:30px;"></div>
-        <div style="display:flex; gap:12px; justify-content:center; flex-wrap: wrap;">
-            <button class="action-btn" onclick="replayStrokes()" style="background:var(--blue); min-width: 100px;">🔁 REPLAY</button>
-            <button class="action-btn" onclick="togglePinyin('trace')" style="background:var(--primary); min-width: 100px;">👀 PINYIN</button>
-            <button class="action-btn" onclick="newTraceChar()" style="background:var(--secondary); min-width: 100px;">🔄 NEXT</button>
+        <div id="trace-pinyin" style="font-size:22px; color:var(--primary); font-weight:900; visibility:hidden; height:30px; margin-bottom:10px;"></div>
+        <div style="display:flex; gap:10px; justify-content:center; flex-wrap: wrap;">
+            <button class="action-btn" onclick="replayStrokes()" style="background:var(--blue); min-width: 80px;">🔁 REPLAY</button>
+            <button class="action-btn" onclick="togglePinyin('trace')" style="background:var(--primary); min-width: 80px;">👀 PINYIN</button>
+            <button class="action-btn" onclick="newTraceChar()" style="background:var(--secondary); min-width: 80px;">🔄 NEXT</button>
         </div>
     </div>
 
     <div id="match-page" class="page">
-        <div id="match-hint" class="hint">Find the pairs! 🧩</div>
+        <div id="match-hint" class="progress-banner" style="margin-bottom:10px;">Find the pairs! 🧩</div>
         <div id="matchGrid" class="match-grid"></div>
-        <div style="margin-top:20px;"><button id="match-next-btn" class="action-btn" onclick="startMatchGame()" style="display:none; background:var(--secondary); min-width: 180px;">🎮 PLAY AGAIN</button></div>
+        <button id="match-next-btn" class="action-btn" onclick="startMatchGame()" style="display:none; background:var(--secondary); margin-top:20px; width: 100%;">🎮 PLAY AGAIN</button>
     </div>
 
     <div id="lib-page" class="page">
-        <div class="hint">Tap to listen 🔉 and Hold (2s) to see strokes 🔍</div>
+        <div class="progress-banner" style="margin-bottom:10px;">Tap to Hear 🔉 Hold for Strokes ✍️</div>
         <div id="libGrid" class="lib-grid"></div>
     </div>
 
@@ -163,67 +152,186 @@
     <div id="focus-overlay" onclick="closeFocus()">
         <div class="focus-card" onclick="event.stopPropagation()">
             <div id="focus-writer-container"></div>
-            <div id="focus-pinyin-val" style="font-size:28px; color:var(--primary); font-weight:bold; margin-top:10px;"></div>
-            <button class="action-btn" onclick="animateFocusOnly()" style="background:var(--blue); width:100%; margin-top:15px;">🔁 REPLAY</button>
+            <div id="focus-pinyin-val" style="font-size:28px; color:var(--primary); font-weight:bold; margin-top:5px;"></div>
+            <div id="focus-star-count" style="font-size:16px; color:var(--purple); margin-bottom:15px;"></div>
+            <button class="action-btn" onclick="animateFocusOnly()" style="background:var(--blue); width:100%;">🔁 REPLAY</button>
+            <button class="action-btn" onclick="closeFocus()" style="background:var(--primary); width:100%; margin-top:10px;">❌ CLOSE</button>
         </div>
     </div>
 
 <script>
-    const quotes = [
-        "Every little character you learn is a new seed in your secret garden! 🌱",
-        "Your brain is like a superhero muscle! Every time you practice, it gets stronger! 💪",
-        "Learning is like a treasure hunt—each word is a gold coin! 🪙",
-        "You are a star student! Keep shining and keep learning! ⭐",
-        "Big things start small. Just like a giant tree starts as a tiny seed! 🌳",
-        "Every stroke you draw is a step toward becoming a master artist! 🎨",
-        "Mistakes are just happy little helpers that teach us how to grow! ✨",
-        "You have the power to learn anything. You're amazing, Ka Yan! 🚀",
-        "Practice makes progress! You are doing better and better every day! 📈",
-        "Chinese is like a puzzle, and you are great at finding the right pieces! 🧩"
-    ];
-
-    const rawList = "上下大小又了个不人口手心牙头舌耳木土水火山天日月刀尺门书牛羊马只白云风雨花石飞太米光毛子工几力气里外没有把的多少开关去来什么是还会男女左右好坏在这也对要是我们你他";
+    const quotes = ["Every character is a seed! 🌱", 
+                    "Your brain is a superhero muscle! 💪", 
+                    "You are a star student! ⭐", 
+                    "Mistakes help us grow! ✨", 
+                    "Practice makes progress! 📈", 
+                    "Your ideas are like fireworks! 🎆",
+                    "You are the captain of your kindness! ⚓",
+                    "Every 'oops' is a chance to learn! 🎢",
+                    "You have a heart full of sunshine! ☀️",
+                    "Big dreams start with small steps! 👣"];
+    
+    const rawList = "走跳爬站跑步游泳运动打球早操玩具积木拼图木马下棋";
+// 叉面白米饭果汁
+// 煮炒猪肉牛羊
+// 桌子椅朋友读书铅笔 
+// 面包牛奶饼干鸡蛋点心
+    
+//​ 走跳爬站跑
+// 跑步游泳运动打球早操
+// 玩具积木拼图木马下棋
+// 拔河游戏打乒乓网球羽毛球
     const charArray = rawList.split('');
-    const pinyinMap = {'上':'shàng','下':'xià','大':'dà','小':'xiǎo','又':'yòu','了':'le','个':'gè','不':'bù','人':'rén','口':'kǒu','手':'shǒu','心':'xīn','牙':'yá','头':'tóu','舌':'shé','耳':'ěr','木':'mù','土':'tǔ','水':'shuǐ','火':'huǒ','山':'shān','天':'tiān','日':'rì','月':'yuè','刀':'dāo','尺':'chǐ','门':'mén','书':'shū','牛':'niú','羊':'yáng','马':'mǎ','只':'zhī','白':'bái','云':'yún','风':'fēng','雨':'yǔ','花':'huā','石':'shí','飞':'fēi','太':'tài','米':'mǐ','光':'guāng','毛':'máo','子':'zǐ','工':'gōng','几':'jǐ','力':'lì','气':'qì','里':'lǐ','外':'wài','没':'méi','有':'yǒu','把':'bǎ','的':'de','多':'duō','少':'shǎo','开':'kāi','关':'guān','去':'qù','来':'lái','什':'shén','么':'me','是':'shì','还':'hái','会':'huì','男':'nán','女':'nǚ','左':'zuǒ','右':'yòu','好':'hǎo','坏':'huài','在':'zài','这':'zhè','也':'yě','对':'duì','要':'yào','我':'wǒ','们':'men','你':'nǐ','他':'tā'};
+    const pinyinMap = {
+//    '桌': 'zhuō', 
+//    '子': 'zi',
+//    '椅': 'yǐ', 
+//    '朋': 'péng', 
+//    '友': 'yǒu', 
+//    '读': 'dú', 
+//    '书': 'shū', 
+//    '铅': 'qiān', 
+//    '笔': 'bǐ',
+        
+//      '叉': 'chā',
+//      '面': 'miàn',
+//      '白': 'bái',
+//      '米': 'mǐ',
+//      '饭': 'fàn',
+//      '果': 'guǒ',
+//      '汁': 'zhī'  };
 
-    let writer, focusWriter, currentTraceChar = "";
-    let playPinyinVisible = false, tracePinyinVisible = false, playHistory = [], currentSet = [], pressTimer;
-
-    function setRandomQuote() {
-        const randomIndex = Math.floor(Math.random() * quotes.length);
-        document.getElementById('motivational-quote').innerText = quotes[randomIndex];
-    }
-
-    // New function to read English quotes out loud
-    function readQuoteOutLoud() {
-        window.speechSynthesis.cancel();
-        const text = document.getElementById('motivational-quote').innerText;
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'en-US'; // Quotes are in English
-        u.rate = 0.9;
-        window.speechSynthesis.speak(u);
-    }
-
-    function toggleFullScreen() {
-        if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); document.getElementById('fullscreenToggle').innerText = "❌ EXIT"; }
-        else { document.exitFullscreen(); document.getElementById('fullscreenToggle').innerText = "🖥️ FULLSCREEN"; }
-    }
+//    '煮': 'zhǔ',
+//    '炒': 'chǎo',
+//    '猪': 'zhū',
+//    '肉': 'ròu',
+//    '牛': 'niú',
+//    '羊': 'yáng'     };
+        
+//     '面': 'miàn',
+//     '包': 'bāo',
+//     '奶': 'nǎi',
+//     '饼': 'bǐng',
+//     '干': 'gān',
+//     '鸡': 'jī',
+//     '蛋': 'dàn',
+//     '点': 'diǎn',
+//     '心': 'xīn' 
+    
+    '走': 'zǒu',
+    '跳': 'tiào',
+    '爬': 'pá',
+    '站': 'zhàn',
+    '跑': 'pǎo',      
+    '步': 'bù',
+        
+    '游': 'yóu',
+    '泳': 'yǒng',
+    '运': 'yùn',
+    '动': 'dòng',
+    '打': 'dǎ',
+    '球': 'qiú',
+    '早': 'zǎo',
+    '操': 'cāo',
+        
+    '玩': 'wán',
+    '具': 'jù',
+    '积': 'jī',
+    '木': 'mù',
+    '拼': 'pīn',
+    '图': 'tú',
+    '马': 'mǎ',
+    '下': 'xià',
+    '棋': 'qí',
+        
+//    '拔': 'bá',
+//    '河': 'hé',
+//    '游': 'yóu',
+//    '戏': 'xì',
+//    '打': 'dǎ',
+//    '乒': 'pīng',
+//    '乓': 'pāng',
+//    '网': 'wǎng',
+//    '球': 'qiú',
+//    '羽': 'yǔ',
+//    '毛': 'máo' 
+        
+    };
+        
+    let stars = JSON.parse(localStorage.getItem('kaYanStars')) || {};
+    let writer, focusWriter, pressTimer, currentTraceChar = "";
+    let playPinyinVisible = false, tracePinyinVisible = false, playHistory = [], currentSet = [];
 
     function showPage(pageId, navEl) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.getElementById(pageId + '-page').classList.add('active');
         navEl.classList.add('active');
-        if (pageId === 'home') { setRandomQuote(); window.speechSynthesis.cancel(); }
+        if (pageId === 'home') updateMasteryUI();
+        if (pageId === 'game' && currentSet.length === 0) shufflePlay();
         if (pageId === 'trace') newTraceChar();
         if (pageId === 'match') startMatchGame();
+        if (pageId === 'lib') renderLib();
     }
 
-    function speak(text) { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'zh-CN'; u.rate = 0.8; window.speechSynthesis.speak(u); }
+    function addStar(char) {
+        stars[char] = (stars[char] || 0) + 1;
+        localStorage.setItem('kaYanStars', JSON.stringify(stars));
+        updateMasteryUI();
+    }
 
+    function updateMasteryUI() {
+        const total = Object.values(stars).reduce((a, b) => a + b, 0);
+        const banner = document.getElementById('mastery-banner');
+        if(banner) banner.innerText = `🌟 ${total} Stars Collected`;
+    }
+
+    // --- FOCUS MODE LOGIC ---
+    function openFocus(c) {
+        document.getElementById('focus-writer-container').innerHTML = '';
+        document.getElementById('focus-pinyin-val').innerText = pinyinMap[c] || '';
+        document.getElementById('focus-star-count').innerText = `Stars: ⭐${stars[c] || 0}`;
+        document.getElementById('focus-overlay').style.display = 'flex';
+        focusWriter = HanziWriter.create('focus-writer-container', c, { width: 200, height: 200, padding: 10, showOutline: true, strokeColor: '#FF6B6B' });
+        speak(c); 
+        focusWriter.animateCharacter();
+    }
+
+    function closeFocus() { document.getElementById('focus-overlay').style.display = 'none'; }
+    function animateFocusOnly() { if (focusWriter) focusWriter.animateCharacter(); }
+
+    // --- LIBRARY RENDER WITH LONG PRESS ---
+    function renderLib() {
+        const grid = document.getElementById('libGrid'); grid.innerHTML = '';
+        charArray.forEach((c) => {
+            const count = stars[c] || 0;
+            const item = document.createElement('div'); 
+            item.className = 'lib-item';
+            item.innerHTML = `<div class="lib-star" style="color:${count > 0 ? 'var(--gold)' : '#ccc'}">⭐${count}</div><div class="char-font lib-char">${c}</div><div class="lib-pinyin">${pinyinMap[c]||''}</div>`;
+            
+            // Interaction Logic
+            const startPress = (e) => { 
+                pressTimer = window.setTimeout(() => openFocus(c), 800); // 800ms for long press
+            };
+            const endPress = () => { window.clearTimeout(pressTimer); };
+
+            item.onmousedown = startPress; item.onmouseup = endPress; item.onmouseleave = endPress;
+            item.ontouchstart = startPress; item.ontouchend = endPress;
+            
+            item.onclick = () => speak(c);
+            grid.appendChild(item);
+        });
+    }
+
+    // --- REST OF THE MODULES ---
     function togglePinyin(mode) {
-        if (mode === 'play') { playPinyinVisible = !playPinyinVisible; document.querySelectorAll('#game-page .pinyin-label').forEach(p => p.style.visibility = playPinyinVisible ? 'visible' : 'hidden'); }
-        else if (mode === 'trace') { tracePinyinVisible = !tracePinyinVisible; document.getElementById('trace-pinyin').style.visibility = tracePinyinVisible ? 'visible' : 'hidden'; }
+        if (mode === 'play') {
+            playPinyinVisible = !playPinyinVisible;
+            document.querySelectorAll('#game-page .pinyin-label').forEach(p => p.style.visibility = playPinyinVisible ? 'visible' : 'hidden');
+        } else {
+            tracePinyinVisible = !tracePinyinVisible;
+            document.getElementById('trace-pinyin').style.visibility = tracePinyinVisible ? 'visible' : 'hidden';
+        }
     }
 
     function shufflePlay() {
@@ -233,7 +341,13 @@
         document.getElementById('backBtn').disabled = playHistory.length === 0;
     }
 
-    function goBack() { if (playHistory.length > 0) { currentSet = playHistory.pop(); renderPlayCards(currentSet); document.getElementById('backBtn').disabled = playHistory.length === 0; } }
+    function goBack() {
+        if (playHistory.length > 0) {
+            currentSet = playHistory.pop();
+            renderPlayCards(currentSet);
+            document.getElementById('backBtn').disabled = playHistory.length === 0;
+        }
+    }
 
     function renderPlayCards(chars) {
         const grid = document.getElementById('cardGrid'); grid.innerHTML = '';
@@ -244,11 +358,22 @@
         });
     }
 
+
     function newTraceChar() {
         currentTraceChar = charArray[Math.floor(Math.random() * charArray.length)];
         document.getElementById('writer-container').innerHTML = '';
         document.getElementById('trace-pinyin').innerText = pinyinMap[currentTraceChar] || '';
-        writer = HanziWriter.create('writer-container', currentTraceChar, { width: 220, height: 220, padding: 10, showOutline: true, strokeAnimationSpeed: 1.5, strokeColor: '#FF6B6B' });
+    
+    // ADD SPEED SETTINGS HERE
+        writer = HanziWriter.create('writer-container', currentTraceChar, {
+            width: 220,
+            height: 220,
+            padding: 10,
+            showOutline: true,
+            strokeColor: '#FF6B6B',
+            strokeAnimationSpeed: 1, // Double speed (Default is 1)
+            delayBetweenStrokes: 100 // 100ms pause (Default is 300)
+            });
         replayStrokes();
     }
 
@@ -258,13 +383,15 @@
         writer.cancelQuiz();
         writer.animateCharacter({ onComplete: () => {
             document.getElementById('trace-msg').innerText = "Your turn! ✍️";
-            writer.quiz({ onComplete: () => { speak(currentTraceChar); confetti({ particleCount: 30 }); }});
+            writer.quiz({ onComplete: () => { 
+                speak(currentTraceChar); confetti({ particleCount: 30 }); addStar(currentTraceChar);
+                document.getElementById('trace-msg').innerText = "Perfect! ⭐";
+            }});
         }});
     }
 
     function startMatchGame() {
         document.getElementById('match-next-btn').style.display = 'none';
-        document.getElementById('match-hint').innerText = "Find the pairs! 🧩";
         const selected = [...charArray].sort(() => 0.5 - Math.random()).slice(0, 4);
         let cards = [];
         selected.forEach(c => { cards.push({val: c, m: c, type: 'c'}); cards.push({val: pinyinMap[c], m: c, type: 'p'}); });
@@ -272,19 +399,21 @@
         const grid = document.getElementById('matchGrid'); grid.innerHTML = ''; let first = null, matches = 0;
         cards.forEach(d => {
             const el = document.createElement('div'); el.className = 'match-card';
-            el.innerHTML = d.type === 'c' ? `<div class="char-font match-char-text">${d.val}</div>` : `<div class="match-pinyin-text">${d.val}</div>`;
+            el.innerHTML = d.type === 'c' ? `<div class="char-font" style="font-size:38px;">${d.val}</div>` : `<div style="font-weight:bold; color:var(--primary)">${d.val}</div>`;
             el.onclick = () => {
                 if(el.style.opacity === '0.2' || el.classList.contains('match-card-selected')) return;
                 el.classList.add('match-card-selected');
                 if(!first) { first = {el, d}; } else {
                     if(first.d.m === d.m) {
                         const c1 = first.el, c2 = el;
-                        setTimeout(() => { c1.style.opacity = '0.2'; c2.style.opacity = '0.2'; matches++;
-                            if(matches === 4) { document.getElementById('match-hint').innerText = "Awesome! 🌟"; document.getElementById('match-next-btn').style.display = 'inline-block'; confetti({ particleCount: 80 }); }
+                        setTimeout(() => { 
+                            c1.style.opacity = '0.2'; c2.style.opacity = '0.2'; matches++;
+                            addStar(d.m);
+                            if(matches === 4) { confetti({ particleCount: 50 }); document.getElementById('match-next-btn').style.display = 'block'; }
                         }, 300); speak(d.m);
                     } else {
                         const c1 = first.el, c2 = el;
-                        setTimeout(() => { c1.classList.remove('match-card-selected'); c2.classList.remove('match-card-selected'); }, 500);
+                        setTimeout(() => { c1.classList.remove('match-card-selected'); c2.classList.remove('match-card-selected'); }, 400);
                     }
                     first = null;
                 }
@@ -293,33 +422,29 @@
         });
     }
 
-    function renderLib() {
-        const grid = document.getElementById('libGrid');
-        charArray.forEach((c) => {
-            const item = document.createElement('div'); item.className = 'lib-item';
-            item.innerHTML = `<div class="char-font lib-char">${c}</div><div class="lib-pinyin">${pinyinMap[c]||''}</div>`;
-            const startPress = () => { pressTimer = window.setTimeout(() => openFocus(c), 2000); };
-            const endPress = () => { window.clearTimeout(pressTimer); };
-            item.ontouchstart = startPress; item.ontouchend = endPress;
-            item.onmousedown = startPress; item.onmouseup = endPress;
-            item.onclick = () => speak(c); grid.appendChild(item);
-        });
-    }
-
-    function openFocus(c) {
-        document.getElementById('focus-writer-container').innerHTML = '';
-        document.getElementById('focus-pinyin-val').innerText = pinyinMap[c] || '';
-        document.getElementById('focus-overlay').style.display = 'flex';
-        focusWriter = HanziWriter.create('focus-writer-container', c, { width: 220, height: 220, padding: 10, showOutline: true, strokeColor: '#FF6B6B' });
-        speak(c); focusWriter.animateCharacter();
-    }
-    function closeFocus() { document.getElementById('focus-overlay').style.display = 'none'; }
-    function animateFocusOnly() { if (focusWriter) focusWriter.animateCharacter(); }
-
+    function speak(t) { window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'zh-CN'; window.speechSynthesis.speak(u); }
+    function readQuoteOutLoud() { const t = document.getElementById('motivational-quote').innerText; const u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; window.speechSynthesis.speak(u); }
+    function setRandomQuote() { document.getElementById('motivational-quote').innerText = quotes[Math.floor(Math.random()*quotes.length)]; }
+    function toggleFullScreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+    
     // Init
     setRandomQuote();
-    shufflePlay();
-    renderLib();
+    updateMasteryUI();
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
